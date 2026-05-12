@@ -1,7 +1,7 @@
 @param java.util.List<hexlet.code.model.Url> urls
 
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Анализатор сайтов</title>

@@ -1,6 +1,6 @@
 FROM gradle:8.12.1-jdk21
 
-WORKDIR / app
+WORKDIR /app
 
 COPY /app .
 

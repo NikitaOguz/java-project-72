@@ -17,7 +17,7 @@ import io.javalin.rendering.template.JavalinJte;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import kong.unirest.core.Unirest;
+import kong.unirest.Unirest;
 
 import org.jsoup.Jsoup;
 

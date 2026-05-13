@@ -14,7 +14,6 @@ import java.util.HashMap;
 public class UrlController {
 
     public static void create(Context ctx) throws Exception {
-
         String input = ctx.formParam("url");
 
         try {
@@ -22,13 +21,8 @@ public class UrlController {
                 throw new IllegalArgumentException();
             }
 
-            URI uri = new URI(input);
-
-            if (uri.getScheme() == null || uri.getHost() == null) {
-                throw new IllegalArgumentException();
-            }
-
-            String normalized = uri.getScheme() + "://" + uri.getHost();
+            URL parsedUrl = new URL(input);
+            String normalized = parsedUrl.getProtocol() + "://" + parsedUrl.getHost();
 
             Url existing = UrlRepository.findByName(normalized);
 
@@ -36,6 +30,7 @@ public class UrlController {
                 var page = new HashMap<String, Object>();
                 page.put("url", existing);
                 page.put("flash", "Страница уже существует");
+                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
 
                 ctx.status(200);
                 ctx.render("urls/show.jte", page);

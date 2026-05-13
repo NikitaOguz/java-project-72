@@ -38,7 +38,7 @@
                         type="text"
                         name="url"
                         class="form-control form-control-lg"
-                        placeholder="https://www.example.com"
+                        placeholder="https://example.com"
                 >
 
             </div>

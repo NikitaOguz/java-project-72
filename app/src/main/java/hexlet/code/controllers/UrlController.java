@@ -1,6 +1,7 @@
 package hexlet.code.controllers;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 
 import io.javalin.http.Context;
@@ -68,13 +69,19 @@ public class UrlController {
 
     public static void show(Context ctx) throws Exception {
 
-        Long id = Long.valueOf(ctx.pathParam("id"));
+        Long id = Long.valueOf(
+                ctx.pathParam("id")
+        );
 
         Url url = UrlRepository.find(id);
+
+        var checks = UrlCheckRepository.findByUrlId(id);
 
         var page = new HashMap<String, Object>();
 
         page.put("url", url);
+
+        page.put("checks", checks);
 
         page.put(
                 "flash",
@@ -82,6 +89,9 @@ public class UrlController {
         );
 
         ctx.render("urls/show.jte", page);
+    }
+    public static Url findUrl(Long id) throws Exception {
+        return UrlRepository.find(id);
     }
 }
 

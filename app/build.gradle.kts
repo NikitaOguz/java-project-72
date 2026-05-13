@@ -43,6 +43,9 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.27.3")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    implementation("com.konghq:unirest-java:4.4.5")
+    implementation("org.jsoup:jsoup:1.18.1")
 }
 
 tasks.test {

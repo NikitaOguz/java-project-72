@@ -1,13 +1,70 @@
 @param hexlet.code.model.Url url
 @param String flash
-
+@param java.util.List<hexlet.code.model.UrlCheck> checks
 <!doctype html>
 <html>
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<form
+        method="post"
+        action="/urls/${url.getId()}/checks"
+>
 
+    <input
+            type="submit"
+            value="Запустить проверку"
+            class="btn btn-primary"
+    >
+
+</form>
+
+<table
+        class="table mt-4"
+        data-test="checks"
+>
+
+    <thead>
+
+    <tr>
+        <th>ID</th>
+        <th>Код ответа</th>
+        <th>h1</th>
+        <th>title</th>
+        <th>description</th>
+        <th>Дата создания</th>
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    @for(var check : checks)
+
+        <tr>
+
+            <td>${check.getId()}</td>
+
+            <td>${check.getStatusCode()}</td>
+
+            <td>${check.getH1()}</td>
+
+            <td>${check.getTitle()}</td>
+
+            <td>${check.getDescription()}</td>
+
+            <td>
+                ${check.getCreatedAt().toString()}
+            </td>
+
+        </tr>
+
+    @endfor
+
+    </tbody>
+
+</table>
 <body class="container mt-5">
 
 @if(flash != null)

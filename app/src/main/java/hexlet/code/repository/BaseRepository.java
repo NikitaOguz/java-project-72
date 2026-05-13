@@ -10,3 +10,4 @@ public abstract class BaseRepository {
         dataSource = ds;
     }
 }
+

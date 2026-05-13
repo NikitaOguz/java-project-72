@@ -23,6 +23,7 @@ dependencies {
     // Javalin
     implementation("io.javalin:javalin:6.6.0")
     implementation("io.javalin:javalin-rendering:6.6.0")
+    testImplementation("io.javalin:javalin-testtools:6.6.0")
 
     // Логи
     implementation("org.slf4j:slf4j-simple:2.0.7")
@@ -35,9 +36,13 @@ dependencies {
     // JTE
     implementation("gg.jte:jte:3.1.9")
 
+
     // Тесты
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.27.3")
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
@@ -53,5 +58,13 @@ tasks.test {
         )
 
         showStandardStreams = true
+    }
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
 }

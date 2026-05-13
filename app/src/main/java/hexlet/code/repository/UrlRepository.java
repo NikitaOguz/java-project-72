@@ -16,27 +16,22 @@ public class UrlRepository extends BaseRepository {
 
     public static Url save(Url url) throws Exception {
 
+        Url existing = findByName(url.getName());
+        if (existing != null) {
+            return existing;
+        }
+
         String sql = "INSERT INTO urls(name, created_at) VALUES (?, ?)";
 
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(
-                        sql,
-                        Statement.RETURN_GENERATED_KEYS
-                )
-        ) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, url.getName());
-
-            stmt.setTimestamp(
-                    2,
-                    new Timestamp(System.currentTimeMillis())
-            );
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 
             stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();
-
             if (keys.next()) {
                 url.setId(keys.getLong(1));
             }
@@ -44,7 +39,6 @@ public class UrlRepository extends BaseRepository {
             return url;
         }
     }
-
     public static Url find(Long id) throws Exception {
 
         String sql = "SELECT * FROM urls WHERE id = ?";

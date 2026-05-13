@@ -5,69 +5,72 @@ import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 
 import hexlet.code.controllers.UrlController;
+import hexlet.code.repository.BaseRepository;
 
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.util.HashMap;
 
 public class App {
 
-    public static Javalin getApp() {
+    public static Javalin getApp() throws Exception {
+
+        initDataSource();
 
         var app = Javalin.create(config -> {
-
             if (System.getenv("APP_ENV") == null) {
                 config.bundledPlugins.enableDevLogging();
             }
 
-            config.fileRenderer(
-                    new JavalinJte(createTemplateEngine())
-            );
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        // Главная страница
         app.get("/", ctx -> {
-
             var page = new HashMap<String, Object>();
-
-            page.put(
-                    "flash",
-                    ctx.consumeSessionAttribute("flash")
-            );
-
+            page.put("flash", ctx.consumeSessionAttribute("flash"));
             ctx.render("index.jte", page);
         });
 
-        // Добавление URL
         app.post("/urls", UrlController::create);
-
-        // Список URL
         app.get("/urls", UrlController::index);
-
-        // Один URL
         app.get("/urls/{id}", UrlController::show);
 
         return app;
     }
 
-    private static TemplateEngine createTemplateEngine() {
+    private static void initDataSource() throws Exception {
+        var config = new HikariConfig();
+        config.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1");
 
-        ClassLoader classLoader = App.class.getClassLoader();
+        var dataSource = new HikariDataSource(config);
+        BaseRepository.setDataSource(dataSource);
 
-        var resolver = new ResourceCodeResolver(
-                "templates",
-                classLoader
-        );
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.createStatement()) {
 
-        return TemplateEngine.create(
-                resolver,
-                ContentType.Html
-        );
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS urls (
+                id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(255) UNIQUE NOT NULL,
+                created_at TIMESTAMP NOT NULL
+            );
+        """);
+        }
     }
 
-    public static void main(String[] args) {
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
 
+        var resolver = new ResourceCodeResolver("templates", classLoader);
+
+        return TemplateEngine.create(resolver, ContentType.Html);
+    }
+
+    public static void main(String[] args) throws Exception {
         var app = getApp();
 
         int port = Integer.parseInt(
@@ -77,3 +80,4 @@ public class App {
         app.start(port);
     }
 }
+

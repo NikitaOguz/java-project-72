@@ -17,45 +17,40 @@ public class UrlController {
         String input = ctx.formParam("url");
 
         try {
+            if (input == null || input.isBlank()) {
+                throw new IllegalArgumentException();
+            }
 
-            URL parsedUrl = new URI(input).toURL();
+            URI uri = new URI(input);
 
-            String normalized =
-                    parsedUrl.getProtocol()
-                            + "://"
-                            + parsedUrl.getAuthority();
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                throw new IllegalArgumentException();
+            }
+
+            String normalized = uri.getScheme() + "://" + uri.getHost();
 
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
+                var page = new HashMap<String, Object>();
+                page.put("url", existing);
+                page.put("flash", "Страница уже существует");
 
-                ctx.sessionAttribute(
-                        "flash",
-                        "Страница уже существует"
-                );
-
-                ctx.redirect("/urls/" + existing.getId());
-
+                ctx.status(200);
+                ctx.render("urls/show.jte", page);
                 return;
             }
 
             Url url = new Url(normalized);
-
             UrlRepository.save(url);
 
-            ctx.sessionAttribute(
-                    "flash",
-                    "Страница успешно добавлена"
-            );
-
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.redirect("/urls/" + url.getId());
 
         } catch (Exception e) {
-
             ctx.status(422);
 
             var page = new HashMap<String, Object>();
-
             page.put("flash", "Некорректный URL");
 
             ctx.render("index.jte", page);
@@ -89,3 +84,4 @@ public class UrlController {
         ctx.render("urls/show.jte", page);
     }
 }
+

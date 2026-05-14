@@ -112,17 +112,25 @@ public class UrlController {
 
             check.setStatusCode(response.getStatus());
 
-            var h1 = document.selectFirst("h1");
-            var title = document.selectFirst("title");
-            var description = document.selectFirst("meta[name=description]");
+            String title = document.title();
 
-            check.setH1(h1 != null ? h1.text() : "");
+            var h1Element = document.selectFirst("h1");
 
-            check.setTitle(title != null ? title.text() : "");
+            var descriptionElement = document.selectFirst(
+                    "meta[name=description]"
+            );
+
+            check.setTitle(title);
+
+            check.setH1(
+                    h1Element != null
+                            ? h1Element.text()
+                            : ""
+            );
 
             check.setDescription(
-                    description != null
-                            ? description.attr("content")
+                    descriptionElement != null
+                            ? descriptionElement.attr("content")
                             : ""
             );
 

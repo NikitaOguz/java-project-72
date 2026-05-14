@@ -6,7 +6,11 @@ import hexlet.code.repository.UrlRepository;
 
 import io.javalin.http.Context;
 
-import java.net.URI;
+import hexlet.code.model.UrlCheck;
+
+import kong.unirest.Unirest;
+
+import org.jsoup.Jsoup;
 import java.net.URL;
 
 import java.util.HashMap;
@@ -87,6 +91,57 @@ public class UrlController {
     }
     public static Url findUrl(Long id) throws Exception {
         return UrlRepository.find(id);
+    }
+    public static void createCheck(Context ctx) throws Exception {
+
+        Long id = Long.valueOf(ctx.pathParam("id"));
+
+        Url url = UrlRepository.find(id);
+
+        try {
+
+            var response = Unirest
+                    .get(url.getName())
+                    .asString();
+
+            var document = Jsoup.parse(response.getBody());
+
+            var check = new UrlCheck();
+
+            check.setUrlId(id);
+
+            check.setStatusCode(response.getStatus());
+
+            var h1 = document.selectFirst("h1");
+            var title = document.selectFirst("title");
+            var description = document.selectFirst("meta[name=description]");
+
+            check.setH1(h1 != null ? h1.text() : "");
+
+            check.setTitle(title != null ? title.text() : "");
+
+            check.setDescription(
+                    description != null
+                            ? description.attr("content")
+                            : ""
+            );
+
+            UrlCheckRepository.save(check);
+
+            ctx.sessionAttribute(
+                    "flash",
+                    "Страница успешно проверена"
+            );
+
+        } catch (Exception e) {
+
+            ctx.sessionAttribute(
+                    "flash",
+                    "Произошла ошибка при проверке"
+            );
+        }
+
+        ctx.redirect("/urls/" + id);
     }
 }
 

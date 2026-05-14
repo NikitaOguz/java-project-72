@@ -6,20 +6,12 @@ import gg.jte.resolve.ResourceCodeResolver;
 
 import hexlet.code.controllers.UrlController;
 
-import hexlet.code.model.UrlCheck;
-
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.repository.UrlCheckRepository;
-
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-import kong.unirest.Unirest;
-
-import org.jsoup.Jsoup;
 
 import java.util.HashMap;
 
@@ -35,116 +27,33 @@ public class App {
                 config.bundledPlugins.enableDevLogging();
             }
 
-            config.fileRenderer(
-                    new JavalinJte(
-                            createTemplateEngine()
-                    )
-            );
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
         app.get("/", ctx -> {
-
             var page = new HashMap<String, Object>();
-
-            page.put(
-                    "flash",
-                    ctx.consumeSessionAttribute("flash")
-            );
-
+            page.put("flash", ctx.consumeSessionAttribute("flash"));
             ctx.render("index.jte", page);
         });
 
         app.post("/urls", UrlController::create);
-
         app.get("/urls", UrlController::index);
-
         app.get("/urls/{id}", UrlController::show);
 
-        app.post("/urls/{id}/checks", ctx -> {
-
-            Long id = Long.parseLong(
-                    ctx.pathParam("id")
-            );
-
-            var url = UrlController.findUrl(id);
-
-            try {
-
-                var response = Unirest
-                        .get(url.getName())
-                        .asString();
-
-                var document = Jsoup.parse(
-                        response.getBody()
-                );
-
-                var check = new UrlCheck();
-
-                check.setUrlId(id);
-
-                check.setStatusCode(
-                        response.getStatus()
-                );
-
-                var h1 = document.selectFirst("h1");
-
-                var title = document.selectFirst("title");
-
-                var description = document.selectFirst(
-                        "meta[name=description]"
-                );
-
-                check.setH1(
-                        h1 != null ? h1.text() : ""
-                );
-
-                check.setTitle(
-                        title != null ? title.text() : ""
-                );
-
-                check.setDescription(
-                        description != null
-                                ? description.attr("content")
-                                : ""
-                );
-
-                UrlCheckRepository.save(check);
-
-                ctx.sessionAttribute(
-                        "flash",
-                        "Страница успешно проверена"
-                );
-
-            } catch (Exception e) {
-
-                ctx.sessionAttribute(
-                        "flash",
-                        "Произошла ошибка при проверке"
-                );
-            }
-
-            ctx.redirect("/urls/" + id);
-        });
+        app.post("/urls/{id}/checks", UrlController::createCheck);
 
         return app;
     }
 
     private static void initDataSource() throws Exception {
-
         var config = new HikariConfig();
-
-        config.setJdbcUrl(
-                "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1"
-        );
+        config.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1");
 
         var dataSource = new HikariDataSource(config);
-
         BaseRepository.setDataSource(dataSource);
 
-        try (
-                var conn = dataSource.getConnection();
-                var stmt = conn.createStatement()
-        ) {
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.createStatement()) {
 
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS urls (
@@ -162,8 +71,7 @@ public class App {
                     h1 TEXT,
                     title TEXT,
                     description TEXT,
-                    created_at TIMESTAMP NOT NULL,
-
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (url_id) REFERENCES urls(id)
                 );
             """);
@@ -171,29 +79,13 @@ public class App {
     }
 
     private static TemplateEngine createTemplateEngine() {
-
-        ClassLoader classLoader = App.class.getClassLoader();
-
-        var resolver = new ResourceCodeResolver(
-                "templates",
-                classLoader
-        );
-
-        return TemplateEngine.create(
-                resolver,
-                ContentType.Html
-        );
+        var resolver = new ResourceCodeResolver("templates", App.class.getClassLoader());
+        return TemplateEngine.create(resolver, ContentType.Html);
     }
 
     public static void main(String[] args) throws Exception {
-
         var app = getApp();
-
-        int port = Integer.parseInt(
-                System.getenv()
-                        .getOrDefault("PORT", "7070")
-        );
-
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "7070"));
         app.start(port);
     }
 }

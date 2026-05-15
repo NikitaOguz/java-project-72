@@ -29,14 +29,7 @@ public class App {
 
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
 
-            config.jetty.modifyServletContextHandler(handler -> {
-                var sessionHandler = new org.eclipse.jetty.server.session.SessionHandler();
-                sessionHandler.setHttpOnly(true);
-                sessionHandler.setSameSite(org.eclipse.jetty.http.HttpCookie.SameSite.LAX);
-                handler.setSessionHandler(sessionHandler);
-            });
         });
-        app.before(ctx -> ctx.req().getSession(true));
         app.get("/", ctx -> {
             var page = new HashMap<String, Object>();
             page.put("flash", ctx.consumeSessionAttribute("flash"));

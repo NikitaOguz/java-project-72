@@ -17,44 +17,74 @@ import java.net.URI;
 public class UrlController {
 
     public static void create(Context ctx) throws Exception {
+
         String input = ctx.formParam("url");
 
         try {
+
             if (input == null || input.isBlank()) {
                 throw new IllegalArgumentException();
             }
 
-            URI parsedUri = new URI(input);
-            String scheme = parsedUri.getScheme();
-            String host = parsedUri.getHost();
+            var uri = new URI(input);
 
-            if (scheme == null || host == null || (!scheme.equals("http") && !scheme.equals("https"))) {
+            String scheme = uri.getScheme();
+            String authority = uri.getAuthority();
+
+            if (scheme == null
+                    || authority == null
+                    || (!scheme.equals("http") && !scheme.equals("https"))) {
+
                 throw new IllegalArgumentException();
             }
 
-            String normalized = scheme + "://" + host;
+            String normalized = scheme + "://" + authority;
 
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                ctx.redirect("/urls/" + existing.getId() + "?flash=duplicate");
+
+                var page = new HashMap<String, Object>();
+
+                page.put("url", existing);
+
+                page.put(
+                        "checks",
+                        UrlCheckRepository.findByUrlId(existing.getId())
+                );
+
+                page.put(
+                        "flash",
+                        "Страница уже существует"
+                );
+
+                ctx.render("urls/show.jte", page);
+
                 return;
             }
 
             Url url = new Url(normalized);
+
             UrlRepository.save(url);
 
             ctx.sessionAttribute(
                     "flash",
-                    "Страница уже существует"
+                    "Страница успешно добавлена"
             );
 
-            ctx.redirect("/urls/" + existing.getId());
+            ctx.redirect("/urls/" + url.getId());
 
         } catch (Exception e) {
+
             ctx.status(422);
+
             var page = new HashMap<String, Object>();
-            page.put("flash", "Некорректный URL");
+
+            page.put(
+                    "flash",
+                    "Некорректный URL"
+            );
+
             ctx.render("index.jte", page);
         }
     }

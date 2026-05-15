@@ -18,7 +18,7 @@
 
 @if(flash != null)
 
-    <div class="alert alert-success">
+    <div class="alert alert-info">
         ${flash}
     </div>
 

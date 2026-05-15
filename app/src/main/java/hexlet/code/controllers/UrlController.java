@@ -14,14 +14,15 @@ import org.jsoup.Jsoup;
 
 import java.util.HashMap;
 import java.net.URI;
+import java.util.Map;
+
 public class UrlController {
 
-    public static void create(Context ctx) throws Exception {
+    public static void create(Context ctx) {
 
         String input = ctx.formParam("url");
 
         try {
-
             if (input == null || input.isBlank()) {
                 throw new IllegalArgumentException();
             }
@@ -31,9 +32,8 @@ public class UrlController {
             String scheme = uri.getScheme();
             String host = uri.getHost();
 
-            if (scheme == null
-                    || host == null
-                    || (!scheme.equals("http") && !scheme.equals("https"))) {
+            if (scheme == null || host == null ||
+                    (!scheme.equals("http") && !scheme.equals("https"))) {
                 throw new IllegalArgumentException();
             }
 
@@ -42,42 +42,22 @@ public class UrlController {
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-
-                var page = new HashMap<String, Object>();
-                page.put("url", existing);
-                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
-                page.put("flash", "Страница уже существует");
-
-                ctx.render("urls/show.jte", page);
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.redirect("/urls/" + existing.getId());
                 return;
             }
 
             Url url = new Url(normalized);
-
             UrlRepository.save(url);
 
-            ctx.sessionAttribute(
-                    "flash",
-                    "Страница успешно добавлена"
-            );
-
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.redirect("/urls/" + url.getId());
 
         } catch (Exception e) {
-
             ctx.status(422);
-
-            var page = new HashMap<String, Object>();
-
-            page.put(
-                    "flash",
-                    "Некорректный URL"
-            );
-
-            ctx.render("index.jte", page);
+            ctx.render("index.jte", Map.of("flash", "Некорректный URL"));
         }
     }
-
     public static void index(Context ctx) throws Exception {
 
         var page = new HashMap<String, Object>();

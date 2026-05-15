@@ -11,10 +11,9 @@ import hexlet.code.model.UrlCheck;
 import kong.unirest.Unirest;
 
 import org.jsoup.Jsoup;
-import java.net.URL;
 
 import java.util.HashMap;
-
+import java.net.URI;
 public class UrlController {
 
     public static void create(Context ctx) throws Exception {
@@ -25,17 +24,20 @@ public class UrlController {
                 throw new IllegalArgumentException();
             }
 
-            URL parsedUrl = new URL(input);
-            String normalized = parsedUrl.getProtocol() + "://" + parsedUrl.getHost();
+            URI parsedUri = new URI(input);
+            String scheme = parsedUri.getScheme();
+            String host = parsedUri.getHost();
+
+            if (scheme == null || host == null || (!scheme.equals("http") && !scheme.equals("https"))) {
+                throw new IllegalArgumentException();
+            }
+
+            String normalized = scheme + "://" + host;
 
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                var page = new HashMap<String, Object>();
-                page.put("url", existing);
-                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
-                page.put("flash", "Страница уже существует");
-                ctx.render("urls/show.jte", page);
+                ctx.redirect("/urls/" + existing.getId() + "?flash=duplicate");
                 return;
             }
 
@@ -47,7 +49,6 @@ public class UrlController {
 
         } catch (Exception e) {
             ctx.status(422);
-
             var page = new HashMap<String, Object>();
             page.put("flash", "Некорректный URL");
             ctx.render("index.jte", page);
@@ -71,8 +72,13 @@ public class UrlController {
         page.put("url", url);
         page.put("checks", checks);
 
-        String flash = ctx.consumeSessionAttribute("flash");
-        page.put("flash", flash);
+        String flash = ctx.queryParam("flash");
+        if ("duplicate".equals(flash)) {
+            page.put("flash", "Страница уже существует");
+        } else {
+            page.put("flash", ctx.consumeSessionAttribute("flash"));
+        }
+
         ctx.render("urls/show.jte", page);
     }
     public static Url findUrl(Long id) throws Exception {

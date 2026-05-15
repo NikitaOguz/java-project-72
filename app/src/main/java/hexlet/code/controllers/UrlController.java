@@ -48,16 +48,6 @@ public class UrlController {
 
                 page.put("url", existing);
 
-                page.put(
-                        "checks",
-                        UrlCheckRepository.findByUrlId(existing.getId())
-                );
-
-                page.put(
-                        "flash",
-                        "Страница уже существует"
-                );
-
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.redirect("/urls/" + existing.getId());
                 return;

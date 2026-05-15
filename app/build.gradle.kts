@@ -3,8 +3,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("java")
+    id("org.sonarqube") version "7.3.0.8198"
     jacoco
     application
+
 }
 
 application {
@@ -68,5 +70,11 @@ tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
         html.required.set(true)
+    }
+}
+sonar {
+    properties {
+        property("sonar.projectKey", "NikitaOguz_java-project-72")
+        property("sonar.organization", "nikitoguzkov")
     }
 }

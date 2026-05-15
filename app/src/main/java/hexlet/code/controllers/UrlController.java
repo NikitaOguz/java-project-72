@@ -70,9 +70,6 @@ public class UrlController {
         page.put("checks", checks);
 
         String flash = ctx.consumeSessionAttribute("flash");
-        if (flash == null) {
-            flash = ctx.header("X-Flash");
-        }
         page.put("flash", flash);
         ctx.render("urls/show.jte", page);
     }

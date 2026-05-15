@@ -13,7 +13,7 @@
 
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container">
-        <a class="navbar-brand" href="/">Анализатор сайтов</a>
+        <a class="navbar-brand" href="/">Анализатор страниц</a>
     </div>
 </nav>
 

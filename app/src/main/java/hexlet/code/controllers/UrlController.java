@@ -44,8 +44,12 @@ public class UrlController {
             Url url = new Url(normalized);
             UrlRepository.save(url);
 
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.redirect("/urls/" + url.getId());
+            ctx.sessionAttribute(
+                    "flash",
+                    "Страница уже существует"
+            );
+
+            ctx.redirect("/urls/" + existing.getId());
 
         } catch (Exception e) {
             ctx.status(422);
@@ -71,13 +75,10 @@ public class UrlController {
         var page = new HashMap<String, Object>();
         page.put("url", url);
         page.put("checks", checks);
-
-        String flash = ctx.queryParam("flash");
-        if ("duplicate".equals(flash)) {
-            page.put("flash", "Страница уже существует");
-        } else {
-            page.put("flash", ctx.consumeSessionAttribute("flash"));
-        }
+        page.put(
+                "flash",
+                ctx.consumeSessionAttribute("flash")
+        );
 
         ctx.render("urls/show.jte", page);
     }

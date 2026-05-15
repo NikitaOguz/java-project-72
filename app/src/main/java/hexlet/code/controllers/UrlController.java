@@ -31,7 +31,8 @@ public class UrlController {
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                ctx.redirect("/urls/" + existing.getId() + "?flash=Страница+уже+существует");
+                String flashMsg = java.net.URLEncoder.encode("Страница уже существует", "UTF-8");
+                ctx.redirect("/urls/" + existing.getId() + "?flash=" + flashMsg);
                 return;
             }
 
@@ -61,28 +62,18 @@ public class UrlController {
     }
 
     public static void show(Context ctx) throws Exception {
-
-        Long id = Long.valueOf(
-                ctx.pathParam("id")
-        );
-
+        Long id = Long.valueOf(ctx.pathParam("id"));
         Url url = UrlRepository.find(id);
-
         var checks = UrlCheckRepository.findByUrlId(id);
-
         var page = new HashMap<String, Object>();
-
         page.put("url", url);
-
         page.put("checks", checks);
+
         String flash = ctx.consumeSessionAttribute("flash");
         if (flash == null) {
-            flash = ctx.queryParam("flash");  // ← добавь эту строку
+            flash = ctx.queryParam("flash");
         }
-        page.put(
-                "flash",
-                ctx.consumeSessionAttribute("flash")
-        );
+        page.put("flash", flash);  // ← используй переменную, не второй consumeSessionAttribute
 
         ctx.render("urls/show.jte", page);
     }

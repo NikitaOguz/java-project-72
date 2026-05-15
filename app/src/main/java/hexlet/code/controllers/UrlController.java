@@ -31,13 +31,8 @@ public class UrlController {
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                var page = new HashMap<String, Object>();
-                page.put("url", existing);
-                page.put("flash", "Страница уже существует");
-                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
-
-                ctx.status(200);
-                ctx.render("urls/show.jte", page);
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.redirect("/urls/" + existing.getId());
                 return;
             }
 

@@ -29,7 +29,7 @@ public class App {
 
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
-
+        app.before(ctx -> ctx.req().getSession(true));
         app.get("/", ctx -> {
             var page = new HashMap<String, Object>();
             page.put("flash", ctx.consumeSessionAttribute("flash"));

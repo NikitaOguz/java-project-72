@@ -31,8 +31,11 @@ public class UrlController {
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                String flashMsg = java.net.URLEncoder.encode("Страница уже существует", "UTF-8");
-                ctx.redirect("/urls/" + existing.getId() + "?flash=" + flashMsg);
+                var page = new HashMap<String, Object>();
+                page.put("url", existing);
+                page.put("flash", "Страница уже существует");
+                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
+                ctx.render("urls/show.jte", page);
                 return;
             }
 
@@ -70,11 +73,11 @@ public class UrlController {
         page.put("checks", checks);
 
         String flash = ctx.consumeSessionAttribute("flash");
+
         if (flash == null) {
             flash = ctx.queryParam("flash");
         }
-        page.put("flash", flash);  // ← используй переменную, не второй consumeSessionAttribute
-
+        page.put("flash", flash);
         ctx.render("urls/show.jte", page);
     }
     public static Url findUrl(Long id) throws Exception {

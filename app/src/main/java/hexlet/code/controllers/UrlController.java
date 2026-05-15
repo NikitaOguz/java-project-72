@@ -29,29 +29,27 @@ public class UrlController {
             var uri = new URI(input);
 
             String scheme = uri.getScheme();
-            String authority = uri.getAuthority();
+            String host = uri.getHost();
 
             if (scheme == null
-                    || authority == null
+                    || host == null
                     || (!scheme.equals("http") && !scheme.equals("https"))) {
-
                 throw new IllegalArgumentException();
             }
 
-            String normalized = scheme + "://" + authority;
+            String normalized = scheme + "://" + host;
 
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
 
                 var page = new HashMap<String, Object>();
-
                 page.put("url", existing);
+                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
+                page.put("flash", "Страница уже существует");
 
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.redirect("/urls/" + existing.getId());
+                ctx.render("urls/show.jte", page);
                 return;
-
             }
 
             Url url = new Url(normalized);

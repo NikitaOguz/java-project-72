@@ -58,9 +58,10 @@ public class UrlController {
                         "Страница уже существует"
                 );
 
-                ctx.render("urls/show.jte", page);
-
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.redirect("/urls/" + existing.getId());
                 return;
+
             }
 
             Url url = new Url(normalized);

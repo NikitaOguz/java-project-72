@@ -31,11 +31,8 @@ public class UrlController {
             Url existing = UrlRepository.findByName(normalized);
 
             if (existing != null) {
-                var page = new HashMap<String, Object>();
-                page.put("url", existing);
-                page.put("flash", "Страница уже существует");
-                page.put("checks", UrlCheckRepository.findByUrlId(existing.getId()));
-                ctx.render("urls/show.jte", page);
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.redirect("/urls/" + existing.getId());
                 return;
             }
 
@@ -73,9 +70,8 @@ public class UrlController {
         page.put("checks", checks);
 
         String flash = ctx.consumeSessionAttribute("flash");
-
         if (flash == null) {
-            flash = ctx.queryParam("flash");
+            flash = ctx.header("X-Flash");
         }
         page.put("flash", flash);
         ctx.render("urls/show.jte", page);

@@ -7,7 +7,7 @@ import hexlet.code.dto.BasePage;
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 
-import hexlet.code.repository.CheckRepository;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 
 import hexlet.code.route.Route;
@@ -56,7 +56,7 @@ public class UrlController {
             var rr1 = new UrlCheck(statusCheck, titleText, h1,
                     description, id, createAt);
 
-            CheckRepository.save(rr1);
+            UrlCheckRepository.save(rr1);
             ctx.sessionAttribute("flashMessage", "Страница успешно проверена");
             ctx.sessionAttribute("flashType", "info");
         } catch (UnirestException e) {
@@ -101,7 +101,7 @@ public class UrlController {
 
     public static void showUrls(Context ctx) throws SQLException {
         var allUrls = UrlRepository.getEntities();
-        var lastCheck = CheckRepository.findLast();
+        var lastCheck = UrlCheckRepository.findLast();
         var page = new UrlsCheckPage(allUrls, lastCheck);
         page.setFlashType(ctx.consumeSessionAttribute("flashType"));
         page.setFlashMessage(ctx.consumeSessionAttribute("flashMessage"));
@@ -112,7 +112,7 @@ public class UrlController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.findById(id)
                 .orElseThrow(() -> new NotFoundResponse("404, Not Found, id=" + id + " is wrong!"));
-        var urls = CheckRepository.findById(id);
+        var urls = UrlCheckRepository.findById(id);
         var page = new UrlPage(url, urls);
 
         page.setFlashType(ctx.consumeSessionAttribute("flashType"));

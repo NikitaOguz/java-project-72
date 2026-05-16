@@ -1,124 +1,122 @@
 package hexlet.code.controllers;
 
+import hexlet.code.dto.UrlPage;
+import hexlet.code.dto.UrlsCheckPage;
+import hexlet.code.dto.BasePage;
+
 import hexlet.code.model.Url;
-import hexlet.code.repository.UrlCheckRepository;
-import hexlet.code.repository.UrlRepository;
-
-import io.javalin.http.Context;
-
 import hexlet.code.model.UrlCheck;
 
+import hexlet.code.repository.CheckRepository;
+import hexlet.code.repository.UrlRepository;
+
+import hexlet.code.route.Route;
+
+import io.javalin.http.Context;
+import static io.javalin.rendering.template.TemplateUtil.model;
+import java.net.URI;
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+
+import io.javalin.http.NotFoundResponse;
+import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
+import kong.unirest.UnirestException;
 import org.jsoup.Jsoup;
-
-import java.util.HashMap;
-import java.net.URI;
-import java.util.Map;
 
 public class UrlController {
 
-    public static void create(Context ctx) {
+    public static void root(Context ctx) {
+        var page = new BasePage();
+        page.setFlashType(ctx.consumeSessionAttribute("flashType"));
+        page.setFlashMessage(ctx.consumeSessionAttribute("flashMessage"));
+        ctx.render("index.jte", model("page", page));
+    }
 
-        String input = ctx.formParam("url");
-
+    public static void checkPath(Context ctx) throws SQLException {
+        var id = ctx.pathParamAsClass("id", Long.class).get();
+        var urlNameForCheck = UrlRepository.findById(id)
+                .orElseThrow(() -> new  NotFoundResponse("ID не найден"));
         try {
-            if (input == null || input.isBlank()) {
-                throw new IllegalArgumentException();
-            }
-
-            var uri = new java.net.URL(input);
-
-            String scheme = uri.getProtocol();
-            String host = uri.getHost();
-
-            if (scheme == null || host == null ||
-                    (!scheme.equals("http") && !scheme.equals("https"))) {
-                throw new IllegalArgumentException();
-            }
-
-            String normalized = scheme + "://" + host;
-
-            Url existing = UrlRepository.findByName(normalized);
-
-            if (existing != null) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.redirect("/urls/" + existing.getId());
-                return;
-            }
-
-            Url url = new Url(normalized);
-            UrlRepository.save(url);
-
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.redirect("/urls/" + url.getId());
-
-        } catch (Exception e) {
-            ctx.status(422);
-            ctx.render("index.jte", Map.of("flash", "Некорректный URL"));
-        }
-    }
-    public static void index(Context ctx) throws Exception {
-        var page = new HashMap<String, Object>();
-        page.put("urls", UrlRepository.getEntities());
-        ctx.render("urls/index.jte", page);
-    }
-
-    public static void show(Context ctx) throws Exception {
-        Long id = Long.valueOf(ctx.pathParam("id"));
-        Url url = UrlRepository.find(id);
-        var checks = UrlCheckRepository.findByUrlId(id);
-        var page = new HashMap<String, Object>();
-        page.put("url", url);
-        page.put("checks", checks);
-        page.put(
-                "flash",
-                ctx.consumeSessionAttribute("flash")
-        );
-
-        ctx.render("urls/show.jte", page);
-    }
-    public static Url findUrl(Long id) throws Exception {
-        return UrlRepository.find(id);
-    }
-    public static void createCheck(Context ctx) throws Exception {
-        Long id = Long.valueOf(ctx.pathParam("id"));
-        Url url = UrlRepository.find(id);
-
-        try {
-            var response = Unirest
-                    .get(url.getName())
+            HttpResponse<String> response = Unirest
+                    .get(urlNameForCheck.getName())
                     .asString();
+            var body = Jsoup.parse(response.getBody());
+            var statusCheck = response.getStatus();
+            var titleText = body.title();
+            var getSome = body.selectFirst("h1");
+            var h1 = getSome != null ? getSome.text() : "";
 
-            if (response.getStatus() >= 400) {
-                throw new Exception("Bad status code");
-            }
+            getSome = body.selectFirst("meta[name=description]");
+            var description = getSome != null ? getSome.attr("content") : "";
 
-            var document = Jsoup.parse(response.getBody());
+            var createAt = LocalDateTime.now();
+            var rr1 = new UrlCheck(statusCheck, titleText, h1,
+                    description, id, createAt);
 
-            var check = new UrlCheck();
-            check.setUrlId(id);
-            check.setStatusCode(response.getStatus());
-            check.setTitle(document.title());
+            CheckRepository.save(rr1);
+            ctx.sessionAttribute("flashMessage", "Страница успешно проверена");
+            ctx.sessionAttribute("flashType", "info");
+        } catch (UnirestException e) {
+            ctx.sessionAttribute("flashMessage", "Некорректный адрес");
+            ctx.sessionAttribute("flashType", "danger");
+        }
+        ctx.redirect(Route.urlPath(id));
+    }
 
-            var h1Element = document.selectFirst("h1");
-            check.setH1(h1Element != null ? h1Element.text() : "");
+    public static void addUrl(Context ctx) throws SQLException {
+        var urlsName = ctx.formParamAsClass("url", String.class).get();
 
-            var descriptionElement = document.selectFirst("meta[name=description]");
-            check.setDescription(
-                    descriptionElement != null
-                            ? descriptionElement.attr("content")
-                            : ""
-            );
-
-            UrlCheckRepository.save(check);
-            ctx.sessionAttribute("flash", "Страница успешно проверена");
-
+        URL uri = null;
+        try {
+            assert urlsName != null;
+            uri = new URI(urlsName).toURL();
         } catch (Exception e) {
-            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
+            ctx.sessionAttribute("flashMessage", "Некорректный URL");
+            ctx.sessionAttribute("flashType", "danger");
+            ctx.redirect(Route.rootPath());
+            return;
         }
 
-        ctx.redirect("/urls/" + id);
+        String protocol = uri.getProtocol();
+        String host = uri.getHost();
+        int port = uri.getPort();
+        String newUrl = protocol + "://" + host + ((port == -1 ? "" : (":" + port)));
+
+        if (UrlRepository.findByName(newUrl).isPresent()) {
+            ctx.sessionAttribute("flashType", "info");
+            ctx.sessionAttribute("flashMessage", "Страница уже существует");
+            ctx.redirect(Route.rootPath());
+            return;
+        }
+        var ldt = LocalDateTime.now();
+        var myUrl = new Url(newUrl, ldt);
+        UrlRepository.save(myUrl);  // сохранили его
+        ctx.sessionAttribute("flashMessage", "Страница успешно добавлена");
+        ctx.sessionAttribute("flashType", "success");
+        ctx.redirect(Route.urlsPath());
+    }
+
+    public static void showUrls(Context ctx) throws SQLException {
+        var allUrls = UrlRepository.getEntities();
+        var lastCheck = CheckRepository.findLast();
+        var page = new UrlsCheckPage(allUrls, lastCheck);
+        page.setFlashType(ctx.consumeSessionAttribute("flashType"));
+        page.setFlashMessage(ctx.consumeSessionAttribute("flashMessage"));
+        ctx.render("url.jte", model("page", page));
+    }
+
+    public static void showUrl(Context ctx) throws SQLException {
+        var id = ctx.pathParamAsClass("id", Long.class).get();
+        var url = UrlRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResponse("404, Not Found, id=" + id + " is wrong!"));
+        var urls = CheckRepository.findById(id);
+        var page = new UrlPage(url, urls);
+
+        page.setFlashType(ctx.consumeSessionAttribute("flashType"));
+        page.setFlashMessage(ctx.consumeSessionAttribute("flashMessage"));
+        ctx.render("show.jte", model("page", page));
     }
 }
-

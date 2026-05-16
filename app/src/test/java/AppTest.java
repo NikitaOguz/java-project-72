@@ -1,9 +1,7 @@
-package hexlet.code;
-
 import hexlet.code.App;
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
-import hexlet.code.repository.UrlCheckRepository;
+import hexlet.code.repository.CheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.route.Route;
 import io.javalin.Javalin;
@@ -54,7 +52,7 @@ public class AppTest {
     public void testCheckPage() throws SQLException {
         var mockUrlString = mServer.url("/").toString();
         Url mockUrl = new Url(mockUrlString);
-        UrlRepository.save(mockUrl);
+        UrlRepository.save(mockUrl); // сохранили у себя url для проверки
 
         var idInBase = mockUrl.getId();
 
@@ -66,7 +64,7 @@ public class AppTest {
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string())
                     .contains("Это мока-затычка для проверки");
-            UrlCheck checkData = UrlCheckRepository.findLast().get(1L);
+            UrlCheck checkData = CheckRepository.findLast().get(1L);  // только 1 запись должна быть в Map
             assertEquals(checkData.getH1(), "Это мока-затычка для проверки");
             assertEquals(checkData.getTitle(), "title для моки");
             assertEquals(checkData.getDescription(), "description для моки");

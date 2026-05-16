@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UrlCheckRepository extends BaseRepository {
+public class CheckRepository extends BaseRepository {
     public static void save(UrlCheck urlCheck) throws SQLException {
         String sql = "INSERT INTO url_checks (status_code, title, h1, description, url_id, created_at)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
@@ -37,7 +37,6 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> findById(long urlId) throws SQLException {
-
         String sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id DESC";
         var listOfUrls = new ArrayList<UrlCheck>();
 
@@ -63,7 +62,6 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static Map<Long, UrlCheck> findLast() {
-
         String sql = "SELECT DISTINCT ON (url_id) * FROM url_checks ORDER BY url_id DESC, created_at DESC";
         Map<Long, UrlCheck> lastCheckMap = new HashMap<>();
         try (var conn = dataSource.getConnection();

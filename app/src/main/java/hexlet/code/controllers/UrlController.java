@@ -85,42 +85,30 @@ public class UrlController {
         return UrlRepository.find(id);
     }
     public static void createCheck(Context ctx) throws Exception {
-
         Long id = Long.valueOf(ctx.pathParam("id"));
-
         Url url = UrlRepository.find(id);
 
         try {
-
-            var response = Unirest.get(url.getName())
-                    .connectTimeout(5000)
-                    .socketTimeout(5000)
+            var response = Unirest
+                    .get(url.getName())
                     .asString();
+
+            // ВАЖНО: считать 4xx/5xx ошибкой
+            if (response.getStatus() >= 400) {
+                throw new Exception("Bad status code");
+            }
 
             var document = Jsoup.parse(response.getBody());
 
             var check = new UrlCheck();
-
             check.setUrlId(id);
-
             check.setStatusCode(response.getStatus());
-
-            String title = document.title();
+            check.setTitle(document.title());
 
             var h1Element = document.selectFirst("h1");
+            check.setH1(h1Element != null ? h1Element.text() : "");
 
-            var descriptionElement = document.selectFirst(
-                    "meta[name=description]"
-            );
-
-            check.setTitle(title);
-
-            check.setH1(
-                    h1Element != null
-                            ? h1Element.text()
-                            : ""
-            );
-
+            var descriptionElement = document.selectFirst("meta[name=description]");
             check.setDescription(
                     descriptionElement != null
                             ? descriptionElement.attr("content")
@@ -128,18 +116,10 @@ public class UrlController {
             );
 
             UrlCheckRepository.save(check);
-
-            ctx.sessionAttribute(
-                    "flash",
-                    "Страница успешно проверена"
-            );
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
 
         } catch (Exception e) {
-
-            ctx.sessionAttribute(
-                    "flash",
-                    "Произошла ошибка при проверке"
-            );
+            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
         }
 
         ctx.redirect("/urls/" + id);

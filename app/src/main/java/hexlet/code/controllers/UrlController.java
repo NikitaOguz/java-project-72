@@ -59,11 +59,8 @@ public class UrlController {
         }
     }
     public static void index(Context ctx) throws Exception {
-
         var page = new HashMap<String, Object>();
-
         page.put("urls", UrlRepository.getEntities());
-
         ctx.render("urls/index.jte", page);
     }
 
@@ -93,7 +90,6 @@ public class UrlController {
                     .get(url.getName())
                     .asString();
 
-            // ВАЖНО: считать 4xx/5xx ошибкой
             if (response.getStatus() >= 400) {
                 throw new Exception("Bad status code");
             }

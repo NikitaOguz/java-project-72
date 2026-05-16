@@ -14,8 +14,11 @@
 
     @for(hexlet.code.model.Url url : urls)
 
-        <tr>
+        @{
+        var lastCheck = checksRepository.getLastCheck(url.getId());
+        }
 
+        <tr>
             <td>${url.getId()}</td>
 
             <td>
@@ -28,8 +31,10 @@
                 ${url.getCreatedAt().toLocalDateTime().toLocalDate().toString()}
             </td>
 
-            <td>200</td>
-
+            {% set lastCheck = hexlet.code.repository.UrlCheckRepository.getLastCheck(url.getId()) %}
+            <td>
+                {{ lastCheck != null ? lastCheck.getStatusCode() : '' }}
+            </td>
         </tr>
 
     @endfor

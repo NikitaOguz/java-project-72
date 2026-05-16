@@ -99,4 +99,42 @@ public class UrlCheckRepository extends BaseRepository {
 
         return checks;
     }
+    public static UrlCheck getLastCheck(Long urlId) {
+        String sql = """
+        SELECT *
+        FROM url_checks
+        WHERE url_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+        """;
+
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setLong(1, urlId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                UrlCheck check = new UrlCheck();
+                check.setId(rs.getLong("id"));
+                check.setUrlId(rs.getLong("url_id"));
+                check.setStatusCode(rs.getInt("status_code"));
+                check.setH1(rs.getString("h1"));
+                check.setTitle(rs.getString("title"));
+                check.setDescription(rs.getString("description"));
+                check.setCreatedAt(rs.getTimestamp("created_at"));
+                return check;
+            }
+
+            return null;
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    public static Integer getLastCheckStatusCode(Long urlId) {
+        UrlCheck check = getLastCheck(urlId);
+        return check != null ? check.getStatusCode() : null;
+    }
 }

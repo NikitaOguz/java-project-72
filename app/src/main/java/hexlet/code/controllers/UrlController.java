@@ -27,9 +27,9 @@ public class UrlController {
                 throw new IllegalArgumentException();
             }
 
-            var uri = new URI(input);
+            var uri = new java.net.URL(input);
 
-            String scheme = uri.getScheme();
+            String scheme = uri.getProtocol();
             String host = uri.getHost();
 
             if (scheme == null || host == null ||
@@ -92,8 +92,9 @@ public class UrlController {
 
         try {
 
-            var response = Unirest
-                    .get(url.getName())
+            var response = Unirest.get(url.getName())
+                    .connectTimeout(5000)
+                    .socketTimeout(5000)
                     .asString();
 
             var document = Jsoup.parse(response.getBody());

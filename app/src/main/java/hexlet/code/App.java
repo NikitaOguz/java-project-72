@@ -68,7 +68,7 @@ public class App {
 
     private static void initDataSource() throws Exception {
         var config = new HikariConfig();
-        config.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1");
+        config.setJdbcUrl("jdbc:h2:mem:project");
 
         var dataSource = new HikariDataSource(config);
         BaseRepository.setDataSource(dataSource);

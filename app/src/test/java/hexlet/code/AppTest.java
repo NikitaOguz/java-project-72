@@ -8,7 +8,8 @@ import io.javalin.testtools.JavalinTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlCheckRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppTest {
@@ -117,6 +118,68 @@ public class AppTest {
 
             assertThat(response.body().string())
                     .contains("Страница уже существует");
+        });
+    }
+    @Test
+    public void testUrlCheckModel() {
+
+        var check = new UrlCheck();
+
+        check.setUrlId(1L);
+        check.setStatusCode(200);
+        check.setTitle("title");
+        check.setH1("h1");
+        check.setDescription("description");
+
+        assertThat(check.getUrlId()).isEqualTo(1L);
+        assertThat(check.getStatusCode()).isEqualTo(200);
+        assertThat(check.getTitle()).isEqualTo("title");
+        assertThat(check.getH1()).isEqualTo("h1");
+        assertThat(check.getDescription()).isEqualTo("description");
+    }
+    @Test
+    public void testGetLastCheckMethods() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://example.com")
+        );
+
+        var check = new UrlCheck();
+
+        check.setUrlId(url.getId());
+        check.setStatusCode(200);
+        check.setTitle("Example");
+        check.setH1("Example");
+        check.setDescription("Example description");
+
+        UrlCheckRepository.save(check);
+
+        var lastCheck = UrlCheckRepository.getLastCheck(url.getId());
+
+        assertThat(lastCheck).isNotNull();
+
+        var statusCode =
+                UrlCheckRepository.getLastCheckStatusCode(url.getId());
+
+        assertThat(statusCode).isEqualTo(200);
+    }
+    @Test
+    public void testCheckPageError() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://wrong-domain-123123123.com")
+        );
+
+        JavalinTest.test(app, (server, client) -> {
+
+            var response = client.post(
+                    "/urls/" + url.getId() + "/checks"
+            );
+
+            assertThat(response.code()).isEqualTo(200);
+
+            assertThat(response.body().string())
+                    .contains("Произошла ошибка при проверке");
         });
     }
 }

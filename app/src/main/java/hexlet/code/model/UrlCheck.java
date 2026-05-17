@@ -1,32 +1,76 @@
 package hexlet.code.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.sql.Timestamp;
 
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UrlCheck {
 
-    private long id;
-    private int statusCode;
-    private String title;
-    private String h1;
-    private String description;
+    private Long id;
     private Long urlId;
-    private LocalDateTime createdAt;
-    public UrlCheck(int statusCode, String title, String h1, String description, Long urlId,
-                    LocalDateTime createdAt) {
-        this.statusCode = statusCode;
-        this.title = title;
-        this.h1 = h1;
-        this.description = description;
+
+    private Integer statusCode;
+
+    private String h1;
+    private String title;
+    private String description;
+
+    private Timestamp createdAt;
+
+    public UrlCheck() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    public Integer getStatusCode() {
+        return statusCode;
+    }
+
+    public String getH1() {
+        return h1;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUrlId(Long urlId) {
         this.urlId = urlId;
+    }
+
+    public void setStatusCode(Integer statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public void setH1(String h1) {
+        this.h1 = h1;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 }

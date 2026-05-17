@@ -1,79 +1,113 @@
 package hexlet.code;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.stream.Collectors;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import hexlet.code.controllers.UrlController;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
-import hexlet.code.route.Route;
-import io.javalin.Javalin;
-import io.javalin.rendering.template.JavalinJte;
-import lombok.extern.slf4j.Slf4j;
+
+import hexlet.code.controllers.UrlController;
 
 import hexlet.code.repository.BaseRepository;
+import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
 
-@Slf4j
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import java.util.HashMap;
+
 public class App {
 
-    public static String dbUrl() {
-        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
-        return jdbcUrl;
+    public static Javalin getApp() throws Exception {
+
+        initDataSource();
+
+        var app = Javalin.create(config -> {
+
+            if (System.getenv("APP_ENV") == null) {
+                config.bundledPlugins.enableDevLogging();
+            }
+
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
+
+            config.jetty.modifyServletContextHandler(handler -> {
+                var sessionHandler = new org.eclipse.jetty.server.session.SessionHandler();
+
+                sessionHandler.setHttpOnly(true);
+
+                sessionHandler.setSameSite(
+                        org.eclipse.jetty.http.HttpCookie.SameSite.LAX
+                );
+
+                handler.setSessionHandler(sessionHandler);
+            });
+        });
+
+        app.before(ctx -> ctx.req().getSession(true));
+
+        app.get("/", ctx -> {
+            var page = new HashMap<String, Object>();
+
+            page.put(
+                    "flash",
+                    ctx.consumeSessionAttribute("flash")
+            );
+
+            ctx.render("index.jte", page);
+        });
+
+        app.post("/urls", UrlController::create);
+
+        app.get("/urls", UrlController::index);
+
+        app.get("/urls/{id}", UrlController::show);
+
+        app.post("/urls/{id}/checks", UrlController::createCheck);
+
+        return app;
+    }
+
+    private static void initDataSource() throws Exception {
+        var config = new HikariConfig();
+        config.setJdbcUrl("jdbc:h2:mem:project");
+
+        var dataSource = new HikariDataSource(config);
+        BaseRepository.setDataSource(dataSource);
+
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.createStatement()) {
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS urls (
+                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(255) UNIQUE NOT NULL,
+                    created_at TIMESTAMP NOT NULL
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS url_checks (
+                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                    url_id BIGINT NOT NULL,
+                    status_code INT,
+                    h1 TEXT,
+                    title TEXT,
+                    description TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (url_id) REFERENCES urls(id)
+                );
+            """);
+        }
     }
 
     private static TemplateEngine createTemplateEngine() {
-        ClassLoader classLoader = App.class.getClassLoader();
-        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
-        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
-        return templateEngine;
+        var resolver = new ResourceCodeResolver("templates", App.class.getClassLoader());
+        return TemplateEngine.create(resolver, ContentType.Html);
     }
 
-    private static String readResourceFile(String fileName) throws IOException {
-        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-        }
-    }
-
-    public static Javalin getApp() throws IOException, SQLException {
-        var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(dbUrl());
-        var dataSource = new HikariDataSource(hikariConfig);
-        var sql = readResourceFile("schema.sql");
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
-        BaseRepository.dataSource = dataSource;
-
-        var app = Javalin.create(config -> {
-            config.bundledPlugins.enableDevLogging();
-            config.fileRenderer(new JavalinJte(createTemplateEngine()));
-        });
-
-        // основная страница
-        app.get(Route.rootPath(), UrlController::root);
-        app.post(Route.urlsPath(), UrlController::addUrl);
-        app.get(Route.urlsPath(), UrlController::showUrls);
-        app.get(Route.urlPath("{id}"), UrlController::showUrl);
-        app.post(Route.checkPath("{id}"), UrlController::checkPath);
-        app.get(Route.checkPath("{id}"), UrlController::checkPath);
-        return app;
-    }
-    public static int getPort() {
-        return Integer.parseInt(System.getenv()
-                .getOrDefault("PORT", "7070"));
-    }
-    public static void main(String[] args) throws IOException, SQLException {
-        Javalin app = getApp();
-        app.start(getPort());
+    public static void main(String[] args) throws Exception {
+        var app = getApp();
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "7070"));
+        app.start(port);
     }
 }
+

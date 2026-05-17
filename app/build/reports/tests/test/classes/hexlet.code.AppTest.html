@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">6</div>
+<div class="counter">9</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">5.039s</div>
+<div class="counter">4.982s</div>
 <p>duration</p>
 </div>
 </td>
@@ -78,33 +78,48 @@
 </tr>
 </thead>
 <tr>
+<td class="success">testCheckPageError()</td>
+<td class="success">1.198s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testCreateUrl()</td>
-<td class="success">0.956s</td>
+<td class="success">0.765s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDuplicateUrl()</td>
-<td class="success">0.325s</td>
+<td class="success">0.252s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testGetLastCheckMethods()</td>
+<td class="success">0.019s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testInvalidUrl()</td>
-<td class="success">0.297s</td>
+<td class="success">0.287s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMainPage()</td>
-<td class="success">0.410s</td>
+<td class="success">0.276s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testShowUrl()</td>
-<td class="success">0.337s</td>
+<td class="success">0.243s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUrlCheckModel()</td>
+<td class="success">0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUrlsPage()</td>
-<td class="success">2.714s</td>
+<td class="success">1.930s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -113,10 +128,10 @@
 <h2>Standard error</h2>
 <span class="code">
 <pre id="class-stderr">SLF4J(W): Class path contains multiple SLF4J providers.
-SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@5eb97ced]
-SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@68ba310d]
+SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@25a73de1]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@29852487]
 SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb97ced]
+SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@25a73de1]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
 [Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
@@ -136,7 +151,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection conn20: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection conn11: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
@@ -145,7 +160,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection conn30: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection conn24: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
@@ -154,7 +169,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-5 - Added connection conn39: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-5 - Added connection conn26: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
@@ -163,8 +178,35 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-6 - Added connection conn48: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-6 - Added connection conn50: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Start completed.
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-7 - Starting...
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-7 - Added connection conn60: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-7 - Start completed.
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-8 - Starting...
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-8 - Added connection conn66: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-8 - Start completed.
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-9 - Starting...
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-9 - Added connection conn77: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-9 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
@@ -183,7 +225,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@5eb
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="https://www.gradle.org">Gradle 9.1.0</a> at 18 мая 2026 г., 00:53:29</p>
+<a href="https://www.gradle.org">Gradle 9.1.0</a> at 18 мая 2026 г., 03:36:40</p>
 </div>
 </div>
 </body>

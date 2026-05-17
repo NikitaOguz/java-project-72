@@ -13,9 +13,9 @@ import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 
 import java.util.HashMap;
-import java.net.URI;
 import java.util.Map;
-
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 public class UrlController {
 
     public static void create(Context ctx) {
@@ -77,30 +77,27 @@ public class UrlController {
         Long id = Long.valueOf(ctx.pathParam("id"));
         Url url = UrlRepository.find(id);
         var checks = UrlCheckRepository.findByUrlId(id);
+
         var page = new HashMap<String, Object>();
+
         page.put("url", url);
         page.put("checks", checks);
-        page.put(
-                "flash",
-                ctx.consumeSessionAttribute("flash")
-        );
+        page.put("flash", ctx.queryParam("flash"));
 
         ctx.render("urls/show.jte", page);
     }
-    public static Url findUrl(Long id) throws Exception {
-        return UrlRepository.find(id);
-    }
+
     public static void createCheck(Context ctx) throws Exception {
         Long id = Long.valueOf(ctx.pathParam("id"));
         Url url = UrlRepository.find(id);
 
         try {
-            var response = Unirest
-                    .get(url.getName())
-                    .asString();
+            assert url != null;
+
+            var response = Unirest.get(url.getName()).asString();
 
             if (response.getStatus() >= 400) {
-                throw new Exception("Bad status code");
+                throw new Exception();
             }
 
             var document = Jsoup.parse(response.getBody());
@@ -121,13 +118,22 @@ public class UrlController {
             );
 
             UrlCheckRepository.save(check);
-            ctx.sessionAttribute("flash", "Страница успешно проверена");
+
+            String message = URLEncoder.encode(
+                    "Страница успешно проверена",
+                    StandardCharsets.UTF_8
+            );
+
+            ctx.redirect("/urls/" + id + "?flash=" + message);
 
         } catch (Exception e) {
-            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
-        }
+            String message = URLEncoder.encode(
+                    "Произошла ошибка при проверке",
+                    StandardCharsets.UTF_8
+            );
 
-        ctx.redirect("/urls/" + id);
+            ctx.redirect("/urls/" + id + "?flash=" + message);
+        }
     }
 }
 

@@ -18,7 +18,9 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 }
-
+jacoco {
+    toolVersion = "0.8.13"
+}
 dependencies {
 
     implementation("io.javalin:javalin:6.6.0")
@@ -71,9 +73,17 @@ tasks.jacocoTestReport {
         html.required.set(true)
     }
 }
+tasks.sonar {
+    dependsOn(tasks.jacocoTestReport)
+}
 sonar {
     properties {
         property("sonar.projectKey", "NikitaOguz_java-project-72")
         property("sonar.organization", "nikitoguzkov")
+
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"
+        )
     }
 }

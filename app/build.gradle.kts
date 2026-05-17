@@ -6,7 +6,7 @@ plugins {
     id("org.sonarqube") version "7.3.0.8198"
     jacoco
     application
-
+    id("io.freefair.lombok") version "8.14.2"
 }
 
 application {
@@ -47,6 +47,11 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 tasks.test {

@@ -14,8 +14,7 @@ import org.jsoup.Jsoup;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+
 public class UrlController {
 
     public static void create(Context ctx) {
@@ -82,9 +81,10 @@ public class UrlController {
 
         page.put("url", url);
         page.put("checks", checks);
-        page.put("flash", ctx.queryParam("flash"));
+        page.put("flash", "Произошла ошибка при проверке");
 
         ctx.render("urls/show.jte", page);
+
     }
 
     public static void createCheck(Context ctx) throws Exception {
@@ -119,20 +119,18 @@ public class UrlController {
 
             UrlCheckRepository.save(check);
 
-            String message = URLEncoder.encode(
-                    "Страница успешно проверена",
-                    StandardCharsets.UTF_8
+            ctx.sessionAttribute(
+                    "flash",
+                    "Страница успешно проверена"
             );
-
-            ctx.redirect("/urls/" + id + "?flash=" + message);
+            ctx.redirect("/urls/" + id);
 
         } catch (Exception e) {
-            String message = URLEncoder.encode(
-                    "Произошла ошибка при проверке",
-                    StandardCharsets.UTF_8
+            ctx.sessionAttribute(
+                    "flash",
+                    "Произошла ошибка при проверке"
             );
-
-            ctx.redirect("/urls/" + id + "?flash=" + message);
+            ctx.redirect("/urls/" + id);
         }
     }
 }

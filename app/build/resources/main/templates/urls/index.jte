@@ -1,4 +1,6 @@
 @param java.util.List<hexlet.code.model.Url> urls
+@param java.util.Map<Long, Integer> statuses
+
 <table class="table" data-test="urls">
 
     <thead>
@@ -12,11 +14,7 @@
 
     <tbody>
 
-    @for(hexlet.code.model.Url url : urls)
-
-        @{
-        var lastCheck = checksRepository.getLastCheck(url.getId());
-        }
+    @for(var url : urls)
 
         <tr>
             <td>${url.getId()}</td>
@@ -28,12 +26,13 @@
             </td>
 
             <td>
-                ${url.getCreatedAt().toLocalDateTime().toLocalDate().toString()}
+               ${url.getCreatedAt().toLocalDateTime().toLocalDate().toString()}
             </td>
 
-            {% set lastCheck = hexlet.code.repository.UrlCheckRepository.getLastCheck(url.getId()) %}
             <td>
-                {{ lastCheck != null ? lastCheck.getStatusCode() : '' }}
+                @if(statuses.get(url.getId()) != null)
+                    ${statuses.get(url.getId())}
+                @endif
             </td>
         </tr>
 

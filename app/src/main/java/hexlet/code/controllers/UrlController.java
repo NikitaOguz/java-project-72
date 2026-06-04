@@ -1,15 +1,11 @@
 package hexlet.code.controllers;
 
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
-
 import io.javalin.http.Context;
-
-import hexlet.code.model.UrlCheck;
-
 import kong.unirest.Unirest;
-
 import org.jsoup.Jsoup;
 
 import java.util.HashMap;
@@ -31,8 +27,9 @@ public class UrlController {
             String scheme = uri.getProtocol();
             String host = uri.getHost();
 
-            if (scheme == null || host == null ||
-                    (!scheme.equals("http") && !scheme.equals("https"))) {
+            if (scheme == null
+                    || host == null
+                    || (!scheme.equals("http") && !scheme.equals("https"))) {
                 throw new IllegalArgumentException();
             }
 
@@ -42,7 +39,8 @@ public class UrlController {
 
             if (existing != null) {
 
-                var checks = UrlCheckRepository.findByUrlId(existing.getId());
+                var checks =
+                        UrlCheckRepository.findByUrlId(existing.getId());
 
                 var page = new HashMap<String, Object>();
 
@@ -51,83 +49,114 @@ public class UrlController {
                 page.put("flash", "Страница уже существует");
 
                 ctx.render("urls/show.jte", page);
-
                 return;
             }
 
             Url url = new Url(normalized);
             UrlRepository.save(url);
 
-            ctx.redirect("/urls/" + url.getId());;
+            ctx.sessionAttribute(
+                    "flash",
+                    "Страница успешно добавлена"
+            );
+
+            ctx.redirect("/urls/" + url.getId());
 
         } catch (Exception e) {
+
             ctx.status(422);
-            ctx.render("index.jte", Map.of("flash", "Некорректный URL"));
+
+            ctx.render(
+                    "index.jte",
+                    Map.of("flash", "Некорректный URL")
+            );
         }
     }
+
     public static void index(Context ctx) throws Exception {
+        var urls = UrlRepository.getEntities();
+
+        Map<Long, Integer> statuses = new HashMap<>();
+
+        for (var url : urls) {
+            var check = UrlCheckRepository.getLastCheck(url.getId());
+            statuses.put(
+                    url.getId(),
+                    check != null ? check.getStatusCode() : null
+            );
+        }
+
         var page = new HashMap<String, Object>();
-        page.put("urls", UrlRepository.getEntities());
+        page.put("urls", urls);
+        page.put("statuses", statuses);
+
         ctx.render("urls/index.jte", page);
     }
 
     public static void show(Context ctx) throws Exception {
 
-        System.out.println(
-                "SESSION ID = " + ctx.req().getSession().getId()
-        );
-
-
         Long id = Long.valueOf(ctx.pathParam("id"));
 
         Url url = UrlRepository.find(id);
-        var checks = UrlCheckRepository.findByUrlId(id);
+
+        var checks =
+                UrlCheckRepository.findByUrlId(id);
 
         var page = new HashMap<String, Object>();
 
         page.put("url", url);
         page.put("checks", checks);
-        String flashKey = ctx.queryParam("flash");
 
-        String flash = null;
-
-        if ("added".equals(flashKey)) {
-            flash = "Страница успешно добавлена";
-        } else if ("checked".equals(flashKey)) {
-            flash = "Страница успешно проверена";
-        } else if ("error".equals(flashKey)) {
-            flash = "Произошла ошибка при проверке";
-        }
-
-        page.put("flash", flash);
+        page.put(
+                "flash",
+                ctx.consumeSessionAttribute("flash")
+        );
 
         ctx.render("urls/show.jte", page);
     }
 
     public static void createCheck(Context ctx) throws Exception {
+
         Long id = Long.valueOf(ctx.pathParam("id"));
+
         Url url = UrlRepository.find(id);
 
         try {
-            assert url != null;
 
-            var response = Unirest.get(url.getName()).asString();
+            if (url == null) {
+                throw new Exception();
+            }
+
+            var response =
+                    Unirest.get(url.getName()).asString();
 
             if (response.getStatus() >= 400) {
                 throw new Exception();
             }
 
-            var document = Jsoup.parse(response.getBody());
+            var document =
+                    Jsoup.parse(response.getBody());
 
             var check = new UrlCheck();
+
             check.setUrlId(id);
             check.setStatusCode(response.getStatus());
             check.setTitle(document.title());
 
-            var h1Element = document.selectFirst("h1");
-            check.setH1(h1Element != null ? h1Element.text() : "");
+            var h1Element =
+                    document.selectFirst("h1");
 
-            var descriptionElement = document.selectFirst("meta[name=description]");
+            check.setH1(
+                    h1Element != null
+                            ? h1Element.text()
+                            : ""
+            );
+
+            var descriptionElement =
+                    document.selectFirst(
+                            "meta[name=description]"
+                    );
+
             check.setDescription(
                     descriptionElement != null
                             ? descriptionElement.attr("content")
@@ -136,13 +165,25 @@ public class UrlController {
 
             UrlCheckRepository.save(check);
 
+            ctx.sessionAttribute(
+                    "flash",
+                    "Страница успешно проверена"
+            );
+
             ctx.redirect("/urls/" + id);
 
         } catch (Exception e) {
 
+            var checks = UrlCheckRepository.findByUrlId(id);
 
-            ctx.redirect("/urls/" + id);
-        }
+            var page = new HashMap<String, Object>();
+
+            page.put("url", url);
+            page.put("checks", checks);
+            page.put("flash", "Произошла ошибка при проверке");
+
+            ctx.render("urls/show.jte", page);
         }
     }
+}
 

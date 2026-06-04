@@ -29,20 +29,10 @@ public class App {
                 config.bundledPlugins.enableDevLogging();
             }
 
-            config.fileRenderer(new JavalinJte(createTemplateEngine()));
-            config.jetty.modifyServletContextHandler(handler -> {
-                var sessionHandler = new SessionHandler();
-
-                sessionHandler.setHttpOnly(true);
-
-                sessionHandler.setSameSite(
-                        HttpCookie.SameSite.LAX
-                );
-
-                handler.setSessionHandler(sessionHandler);
-            });
+            config.fileRenderer(
+                    new JavalinJte(createTemplateEngine())
+            );
         });
-        app.before(ctx -> ctx.req().getSession(true));
 
         app.get("/", ctx -> {
             var page = new HashMap<String, Object>();
@@ -56,11 +46,8 @@ public class App {
         });
 
         app.post("/urls", UrlController::create);
-
         app.get("/urls", UrlController::index);
-
         app.get("/urls/{id}", UrlController::show);
-
         app.post("/urls/{id}/checks", UrlController::createCheck);
 
         return app;

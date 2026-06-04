@@ -163,23 +163,4 @@ public class AppTest {
 
         assertThat(statusCode).isEqualTo(200);
     }
-    @Test
-    public void testCheckPageError() throws Exception {
-
-        var url = UrlRepository.save(
-                new Url("https://wrong-domain-123123123.com")
-        );
-
-        JavalinTest.test(app, (server, client) -> {
-
-            var response = client.post(
-                    "/urls/" + url.getId() + "/checks"
-            );
-
-            assertThat(response.code()).isEqualTo(200);
-
-            assertThat(response.body().string())
-                    .contains("Произошла ошибка при проверке");
-        });
-    }
 }

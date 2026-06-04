@@ -174,15 +174,12 @@ public class UrlController {
 
         } catch (Exception e) {
 
-            var checks = UrlCheckRepository.findByUrlId(id);
+            ctx.sessionAttribute(
+                    "flash",
+                    "Произошла ошибка при проверке"
+            );
 
-            var page = new HashMap<String, Object>();
-
-            page.put("url", url);
-            page.put("checks", checks);
-            page.put("flash", "Произошла ошибка при проверке");
-
-            ctx.render("urls/show.jte", page);
+            ctx.redirect("/urls/" + id);
         }
     }
 }

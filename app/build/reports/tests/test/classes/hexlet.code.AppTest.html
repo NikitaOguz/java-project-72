@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">9</div>
+<div class="counter">8</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">3.805s</div>
+<div class="counter">3.782s</div>
 <p>duration</p>
 </div>
 </td>
@@ -78,18 +78,13 @@
 </tr>
 </thead>
 <tr>
-<td class="success">testCheckPageError()</td>
-<td class="success">0.408s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
 <td class="success">testCreateUrl()</td>
-<td class="success">0.573s</td>
+<td class="success">0.606s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDuplicateUrl()</td>
-<td class="success">0.172s</td>
+<td class="success">0.178s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -99,27 +94,27 @@
 </tr>
 <tr>
 <td class="success">testInvalidUrl()</td>
-<td class="success">0.167s</td>
+<td class="success">0.175s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMainPage()</td>
-<td class="success">0.259s</td>
+<td class="success">0.262s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testShowUrl()</td>
-<td class="success">0.201s</td>
+<td class="success">0.194s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUrlCheckModel()</td>
-<td class="success">0.012s</td>
+<td class="success">0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUrlsPage()</td>
-<td class="success">1.997s</td>
+<td class="success">2.340s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -128,10 +123,10 @@
 <h2>Standard error</h2>
 <span class="code">
 <pre id="class-stderr">SLF4J(W): Class path contains multiple SLF4J providers.
-SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@4912d525]
-SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@2bfbffb2]
+SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@388b401d]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@2bcec6a6]
 SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@4912d525]
+SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@388b401d]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
 [Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
@@ -157,7 +152,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@491
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection conn24: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection conn23: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
@@ -181,7 +176,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@491
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-7 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-7 - Added connection conn60: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-7 - Added connection conn54: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-7 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
@@ -189,16 +184,8 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@491
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-8 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-8 - Added connection conn65: url=jdbc:h2:mem:project user=
+[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-8 - Added connection conn64: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-8 - Start completed.
-[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
-[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
-[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
-[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
-[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
-[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-9 - Starting...
-[Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-9 - Added connection conn74: url=jdbc:h2:mem:project user=
-[Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-9 - Start completed.
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
@@ -216,7 +203,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@491
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="https://www.gradle.org">Gradle 9.1.0</a> at 5 июн. 2026 г., 02:38:29</p>
+<a href="https://www.gradle.org">Gradle 9.1.0</a> at 5 июн. 2026 г., 02:48:13</p>
 </div>
 </div>
 </body>

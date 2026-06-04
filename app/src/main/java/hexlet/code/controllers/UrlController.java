@@ -58,8 +58,7 @@ public class UrlController {
             Url url = new Url(normalized);
             UrlRepository.save(url);
 
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.redirect("/urls/" + url.getId());
+            ctx.redirect("/urls/" + url.getId() + "?flash=added");
 
         } catch (Exception e) {
             ctx.status(422);
@@ -73,7 +72,14 @@ public class UrlController {
     }
 
     public static void show(Context ctx) throws Exception {
+
+        System.out.println(
+                "SESSION ID = " + ctx.req().getSession().getId()
+        );
+
+
         Long id = Long.valueOf(ctx.pathParam("id"));
+
         Url url = UrlRepository.find(id);
         var checks = UrlCheckRepository.findByUrlId(id);
 
@@ -81,10 +87,21 @@ public class UrlController {
 
         page.put("url", url);
         page.put("checks", checks);
-        page.put("flash", "Произошла ошибка при проверке");
+        String flashKey = ctx.queryParam("flash");
+
+        String flash = null;
+
+        if ("added".equals(flashKey)) {
+            flash = "Страница успешно добавлена";
+        } else if ("checked".equals(flashKey)) {
+            flash = "Страница успешно проверена";
+        } else if ("error".equals(flashKey)) {
+            flash = "Произошла ошибка при проверке";
+        }
+
+        page.put("flash", flash);
 
         ctx.render("urls/show.jte", page);
-
     }
 
     public static void createCheck(Context ctx) throws Exception {
@@ -119,19 +136,13 @@ public class UrlController {
 
             UrlCheckRepository.save(check);
 
-            ctx.sessionAttribute(
-                    "flash",
-                    "Страница успешно проверена"
-            );
-            ctx.redirect("/urls/" + id);
+            ctx.redirect("/urls/" + id + "?flash=checked");
 
         } catch (Exception e) {
-            ctx.sessionAttribute(
-                    "flash",
-                    "Произошла ошибка при проверке"
-            );
-            ctx.redirect("/urls/" + id);
+
+
+            ctx.redirect("/urls/" + id + "?flash=error");
+        }
         }
     }
-}
 

@@ -12,6 +12,8 @@ import io.javalin.rendering.template.JavalinJte;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.eclipse.jetty.http.HttpCookie;
+import org.eclipse.jetty.server.session.SessionHandler;
 
 import java.util.HashMap;
 
@@ -28,20 +30,18 @@ public class App {
             }
 
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
-
             config.jetty.modifyServletContextHandler(handler -> {
-                var sessionHandler = new org.eclipse.jetty.server.session.SessionHandler();
+                var sessionHandler = new SessionHandler();
 
                 sessionHandler.setHttpOnly(true);
 
                 sessionHandler.setSameSite(
-                        org.eclipse.jetty.http.HttpCookie.SameSite.LAX
+                        HttpCookie.SameSite.LAX
                 );
 
                 handler.setSessionHandler(sessionHandler);
             });
         });
-
         app.before(ctx -> ctx.req().getSession(true));
 
         app.get("/", ctx -> {

@@ -58,7 +58,7 @@ public class UrlController {
             Url url = new Url(normalized);
             UrlRepository.save(url);
 
-            ctx.redirect("/urls/" + url.getId() + "?flash=added");
+            ctx.redirect("/urls/" + url.getId());;
 
         } catch (Exception e) {
             ctx.status(422);
@@ -136,12 +136,12 @@ public class UrlController {
 
             UrlCheckRepository.save(check);
 
-            ctx.redirect("/urls/" + id + "?flash=checked");
+            ctx.redirect("/urls/" + id);
 
         } catch (Exception e) {
 
 
-            ctx.redirect("/urls/" + id + "?flash=error");
+            ctx.redirect("/urls/" + id);
         }
         }
     }

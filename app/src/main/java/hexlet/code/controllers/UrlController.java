@@ -8,6 +8,7 @@ import io.javalin.http.Context;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +23,9 @@ public class UrlController {
                 throw new IllegalArgumentException();
             }
 
-            var uri = new java.net.URL(input);
+            URI uri = new URI(input);
 
-            String scheme = uri.getProtocol();
+            String scheme = uri.getScheme();
             String host = uri.getHost();
 
             if (scheme == null
@@ -39,21 +40,16 @@ public class UrlController {
 
             if (existing != null) {
 
-                var checks =
-                        UrlCheckRepository.findByUrlId(existing.getId());
+                ctx.sessionAttribute(
+                        "flash",
+                        "Страница уже существует"
+                );
 
-                var page = new HashMap<String, Object>();
-
-                page.put("url", existing);
-                page.put("checks", checks);
-                page.put("flash", "Страница уже существует");
-
-                ctx.render("urls/show.jte", page);
+                ctx.redirect("/urls/" + existing.getId());
                 return;
             }
 
-            Url url = new Url(normalized);
-            UrlRepository.save(url);
+            Url url = UrlRepository.save(new Url(normalized));
 
             ctx.sessionAttribute(
                     "flash",
@@ -74,6 +70,7 @@ public class UrlController {
     }
 
     public static void index(Context ctx) throws Exception {
+
         var urls = UrlRepository.getEntities();
 
         Map<Long, Integer> statuses = new HashMap<>();
@@ -87,8 +84,14 @@ public class UrlController {
         }
 
         var page = new HashMap<String, Object>();
+
         page.put("urls", urls);
         page.put("statuses", statuses);
+
+        page.put(
+                "flash",
+                ctx.consumeSessionAttribute("flash")
+        );
 
         ctx.render("urls/index.jte", page);
     }
@@ -174,12 +177,15 @@ public class UrlController {
 
         } catch (Exception e) {
 
-            ctx.sessionAttribute(
-                    "flash",
-                    "Произошла ошибка при проверке"
-            );
+            var checks = UrlCheckRepository.findByUrlId(id);
 
-            ctx.redirect("/urls/" + id);
+            var page = new HashMap<String, Object>();
+
+            page.put("url", url);
+            page.put("checks", checks);
+            page.put("flash", "Произошла ошибка при проверке");
+
+            ctx.render("urls/show.jte", page);
         }
     }
 }

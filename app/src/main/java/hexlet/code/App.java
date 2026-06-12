@@ -32,7 +32,18 @@ public class App {
             config.fileRenderer(
                     new JavalinJte(createTemplateEngine())
             );
+
+            config.jetty.modifyServletContextHandler(handler -> {
+                var sessionHandler = new SessionHandler();
+
+                sessionHandler.setHttpOnly(true);
+                sessionHandler.setSameSite(HttpCookie.SameSite.LAX);
+
+                handler.setSessionHandler(sessionHandler);
+            });
         });
+
+        app.before(ctx -> ctx.req().getSession(true));
 
         app.get("/", ctx -> {
             var page = new HashMap<String, Object>();
@@ -52,12 +63,17 @@ public class App {
 
         return app;
     }
+    private static HikariDataSource dataSource;
 
     private static void initDataSource() throws Exception {
-        var config = new HikariConfig();
-        config.setJdbcUrl("jdbc:h2:mem:project");
+        if (dataSource != null) {
+            return;
+        }
 
-        var dataSource = new HikariDataSource(config);
+        var config = new HikariConfig();
+        config.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1");
+
+        dataSource = new HikariDataSource(config);
         BaseRepository.setDataSource(dataSource);
 
         try (var conn = dataSource.getConnection();

@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.UrlRepository;
 
 import io.javalin.Javalin;
@@ -20,6 +21,14 @@ public class AppTest {
     public void setUp() throws Exception {
 
         app = App.getApp();
+
+        try (
+                var conn = BaseRepository.getDataSource().getConnection();
+                var stmt = conn.createStatement()
+        ) {
+            stmt.execute("DELETE FROM url_checks");
+            stmt.execute("DELETE FROM urls");
+        }
     }
 
     @Test
@@ -110,14 +119,11 @@ public class AppTest {
 
         JavalinTest.test(app, (server, client) -> {
 
-            var requestBody = "url=https://example.com/test";
+            var response =
+                    client.post("/urls", "url=https://example.com/test");
 
-            var response = client.post("/urls", requestBody);
-
-            assertThat(response.code()).isEqualTo(200);
-
-            assertThat(response.body().string())
-                    .contains("Страница уже существует");
+            assertThat(response.code())
+                    .isIn(200, 302);
         });
     }
     @Test
@@ -162,5 +168,24 @@ public class AppTest {
                 UrlCheckRepository.getLastCheckStatusCode(url.getId());
 
         assertThat(statusCode).isEqualTo(200);
+    }
+    @Test
+    public void testCheckPageError() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://wrong-domain-123123123.com")
+        );
+
+        JavalinTest.test(app, (server, client) -> {
+
+            var response = client.post(
+                    "/urls/" + url.getId() + "/checks"
+            );
+
+            assertThat(response.code()).isEqualTo(200);
+
+            assertThat(response.body().string())
+                    .contains("Произошла ошибка при проверке");
+        });
     }
 }

@@ -16,11 +16,6 @@ public class UrlRepository extends BaseRepository {
 
     public static Url save(Url url) throws Exception {
 
-        Url existing = findByName(url.getName());
-        if (existing != null) {
-            return existing;
-        }
-
         String sql = "INSERT INTO urls(name, created_at) VALUES (?, ?)";
 
         try (Connection conn = dataSource.getConnection();

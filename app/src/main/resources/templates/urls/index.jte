@@ -1,6 +1,14 @@
 @param java.util.List<hexlet.code.model.Url> urls
 @param java.util.Map<Long, Integer> statuses
+@param String flash
 
+@template.layout(content = @`
+
+@if(flash != null)
+    <div class="alert alert-success">
+        ${flash}
+    </div>
+@endif
 <table class="table" data-test="urls">
 
     <thead>
@@ -39,5 +47,5 @@
     @endfor
 
     </tbody>
-
 </table>
+`)

@@ -2,31 +2,17 @@
 @param String flash
 @param java.util.List<hexlet.code.model.UrlCheck> checks
 
-<!doctype html>
-<html>
+@template.layout(content = @`
 
-<head>
-    <meta charset="UTF-8">
+    @if(flash != null)
+        <div class="alert alert-info">
+            ${flash}
+        </div>
+    @endif
 
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
-</head>
+    <h1>URL</h1>
 
-<body class="container mt-5">
-
-@if(flash != null)
-
-    <div class="alert alert-info">
-        ${flash}
-    </div>
-
-@endif
-
-<h1>URL</h1>
-
-<table class="table" data-test="url">
+    <table class="table" data-test="url">
 
     <tbody>
 
@@ -96,27 +82,24 @@
             <td>${check.getStatusCode()}</td>
 
             <td>
-                ${
-        check.getH1().length() > 200
-            ? check.getH1().substring(0, 200) + "..."
-            : check.getH1()
-    }
+                ${check.getH1() == null ? "" :
+    (check.getH1().length() > 200
+        ? check.getH1().substring(0, 200) + "..."
+        : check.getH1())}
             </td>
 
             <td>
-                ${
-        check.getTitle().length() > 200
-            ? check.getTitle().substring(0, 200) + "..."
-            : check.getTitle()
-    }
+                ${check.getTitle() == null ? "" :
+    (check.getTitle().length() > 200
+        ? check.getTitle().substring(0, 200) + "..."
+        : check.getTitle())}
             </td>
 
             <td>
-                ${
-        check.getDescription().length() > 200
-            ? check.getDescription().substring(0, 200) + "..."
-            : check.getDescription()
-    }
+                ${check.getDescription() == null ? "" :
+    (check.getDescription().length() > 200
+        ? check.getDescription().substring(0, 200) + "..."
+        : check.getDescription())}
             </td>
 
             <td>
@@ -130,6 +113,4 @@
     </tbody>
 
 </table>
-
-</body>
-</html>
+`)

@@ -9,5 +9,8 @@ public abstract class BaseRepository {
     public static void setDataSource(DataSource ds) {
         dataSource = ds;
     }
+    public static DataSource getDataSource() {
+        return dataSource;
+    }
 }
 

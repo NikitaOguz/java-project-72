@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="hexlet.code.AppTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-06-12T18:39:10.060Z" hostname="DESKTOP-S63R1VP" time="4.289">
+<testsuite name="hexlet.code.AppTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-06-12T19:10:14.917Z" hostname="DESKTOP-S63R1VP" time="4.171">
   <properties/>
-  <testcase name="testUrlsPage()" classname="hexlet.code.AppTest" time="2.306"/>
-  <testcase name="testUrlCheckModel()" classname="hexlet.code.AppTest" time="0.009"/>
-  <testcase name="testMainPage()" classname="hexlet.code.AppTest" time="0.233"/>
-  <testcase name="testGetLastCheckMethods()" classname="hexlet.code.AppTest" time="0.014"/>
-  <testcase name="testCreateUrl()" classname="hexlet.code.AppTest" time="0.589"/>
-  <testcase name="testCheckPageError()" classname="hexlet.code.AppTest" time="0.585"/>
-  <testcase name="testShowUrl()" classname="hexlet.code.AppTest" time="0.188"/>
-  <testcase name="testInvalidUrl()" classname="hexlet.code.AppTest" time="0.168"/>
-  <testcase name="testDuplicateUrl()" classname="hexlet.code.AppTest" time="0.19"/>
+  <testcase name="testUrlsPageWithChecks()" classname="hexlet.code.AppTest" time="2.161"/>
+  <testcase name="testGetDataSource()" classname="hexlet.code.AppTest" time="0.009"/>
+  <testcase name="testUrlsPage()" classname="hexlet.code.AppTest" time="0.255"/>
+  <testcase name="testUrlCheckModel()" classname="hexlet.code.AppTest" time="0.007"/>
+  <testcase name="testMainPage()" classname="hexlet.code.AppTest" time="0.211"/>
+  <testcase name="testGetLastCheckMethods()" classname="hexlet.code.AppTest" time="0.006"/>
+  <testcase name="testCreateUrl()" classname="hexlet.code.AppTest" time="0.586"/>
+  <testcase name="testCheckPageError()" classname="hexlet.code.AppTest" time="0.427"/>
+  <testcase name="testShowUrl()" classname="hexlet.code.AppTest" time="0.18"/>
+  <testcase name="testInvalidUrl()" classname="hexlet.code.AppTest" time="0.155"/>
+  <testcase name="testDuplicateUrl()" classname="hexlet.code.AppTest" time="0.166"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[SLF4J(W): Class path contains multiple SLF4J providers.
-SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@c27d163]
-SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@57c88764]
+SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@398474a2]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@61799544]
 SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@c27d163]
+SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@398474a2]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
 [Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]

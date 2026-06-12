@@ -69,7 +69,7 @@ public class AppTest {
 
             var urls = UrlRepository.getEntities();
 
-            assertThat(urls.size()).isGreaterThan(0);
+            assertThat(urls).hasSize(1);
 
             assertThat(response.body().string())
                     .contains("https://example.com");
@@ -187,5 +187,29 @@ public class AppTest {
             assertThat(response.body().string())
                     .contains("Произошла ошибка при проверке");
         });
+    }
+    @Test
+    public void testUrlsPageWithChecks() throws Exception {
+        var url = UrlRepository.save(
+                new Url("https://example.com")
+        );
+
+        var check = new UrlCheck();
+        check.setUrlId(url.getId());
+        check.setStatusCode(200);
+
+        UrlCheckRepository.save(check);
+
+        JavalinTest.test(app, (server, client) -> {
+            var response = client.get("/urls");
+
+            assertThat(response.body().string())
+                    .contains("200");
+        });
+    }
+    @Test
+    public void testGetDataSource() {
+        assertThat(BaseRepository.getDataSource())
+                .isNotNull();
     }
 }

@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">9</div>
+<div class="counter">11</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">4.282s</div>
+<div class="counter">4.163s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,47 +79,57 @@
 </thead>
 <tr>
 <td class="success">testCheckPageError()</td>
-<td class="success">0.585s</td>
+<td class="success">0.427s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testCreateUrl()</td>
-<td class="success">0.589s</td>
+<td class="success">0.586s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDuplicateUrl()</td>
-<td class="success">0.190s</td>
+<td class="success">0.166s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testGetLastCheckMethods()</td>
-<td class="success">0.014s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testInvalidUrl()</td>
-<td class="success">0.168s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testMainPage()</td>
-<td class="success">0.233s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testShowUrl()</td>
-<td class="success">0.188s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUrlCheckModel()</td>
+<td class="success">testGetDataSource()</td>
 <td class="success">0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testGetLastCheckMethods()</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testInvalidUrl()</td>
+<td class="success">0.155s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testMainPage()</td>
+<td class="success">0.211s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testShowUrl()</td>
+<td class="success">0.180s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUrlCheckModel()</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testUrlsPage()</td>
-<td class="success">2.306s</td>
+<td class="success">0.255s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUrlsPageWithChecks()</td>
+<td class="success">2.161s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -128,13 +138,25 @@
 <h2>Standard error</h2>
 <span class="code">
 <pre id="class-stderr">SLF4J(W): Class path contains multiple SLF4J providers.
-SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@c27d163]
-SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@57c88764]
+SLF4J(W): Found provider [org.slf4j.simple.SimpleServiceProvider@398474a2]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@61799544]
 SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@c27d163]
+SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@398474a2]
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
 [Test worker] INFO com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:project user=
 [Test worker] INFO com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/urls/{id}]
+[Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls/{id}/checks]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: BEFORE[*]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: GET[/]
 [Test worker] INFO io.javalin.Javalin - JAVALIN HANDLER REGISTRATION DEBUG LOG: POST[/urls]
@@ -201,7 +223,7 @@ SLF4J(I): Actual provider is of type [org.slf4j.simple.SimpleServiceProvider@c27
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="https://www.gradle.org">Gradle 9.1.0</a> at 13 июн. 2026 г., 01:39:14</p>
+<a href="https://www.gradle.org">Gradle 9.1.0</a> at 13 июн. 2026 г., 02:10:19</p>
 </div>
 </div>
 </body>

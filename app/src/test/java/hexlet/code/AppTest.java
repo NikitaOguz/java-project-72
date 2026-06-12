@@ -212,4 +212,26 @@ public class AppTest {
         assertThat(BaseRepository.getDataSource())
                 .isNotNull();
     }
+    @Test
+    public void testCheckPageSuccess() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://example.com")
+        );
+
+        JavalinTest.test(app, (server, client) -> {
+
+            client.post("/urls/" + url.getId() + "/checks");
+
+            var checks =
+                    UrlCheckRepository.findByUrlId(url.getId());
+
+            assertThat(checks).isNotEmpty();
+
+            var check = checks.get(0);
+
+            assertThat(check.getStatusCode())
+                    .isEqualTo(200);
+        });
+    }
 }

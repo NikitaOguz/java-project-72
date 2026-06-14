@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UrlRepository extends BaseRepository {
 
@@ -53,7 +54,7 @@ public class UrlRepository extends BaseRepository {
 
                 url.setId(rs.getLong("id"));
                 url.setName(rs.getString("name"));
-                url.setCreatedAt(rs.getTimestamp("created_at"));
+                url.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
                 return url;
             }
@@ -62,7 +63,7 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
-    public static Url findByName(String name) throws Exception {
+    public static Optional<Url> findByName(String name) throws Exception {
 
         String sql = "SELECT * FROM urls WHERE name = ?";
 
@@ -81,12 +82,15 @@ public class UrlRepository extends BaseRepository {
 
                 url.setId(rs.getLong("id"));
                 url.setName(rs.getString("name"));
-                url.setCreatedAt(rs.getTimestamp("created_at"));
+                url.setCreatedAt(
+                        rs.getTimestamp("created_at")
+                                .toLocalDateTime()
+                );
 
-                return url;
+                return Optional.of(url);
             }
 
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -109,7 +113,7 @@ public class UrlRepository extends BaseRepository {
 
                 url.setId(rs.getLong("id"));
                 url.setName(rs.getString("name"));
-                url.setCreatedAt(rs.getTimestamp("created_at"));
+                url.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
                 urls.add(url);
             }

@@ -11,75 +11,75 @@ import org.jsoup.Jsoup;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class UrlController {
 
-    public static void create(Context ctx) {
+    public static void create(Context ctx) throws Exception {
 
         String input = ctx.formParam("url");
+        URI uri;
 
         try {
-            if (input == null || input.isBlank()) {
-                throw new IllegalArgumentException();
-            }
-
-            URI uri = new URI(input);
-
-            String scheme = uri.getScheme();
-            String host = uri.getHost();
-
-            if (scheme == null
-                    || host == null
-                    || (!scheme.equals("http") && !scheme.equals("https"))) {
-                throw new IllegalArgumentException();
-            }
-
-            String normalized = scheme + "://" + host;
-
-            Url existing = UrlRepository.findByName(normalized);
-
-            if (existing != null) {
-
-                ctx.sessionAttribute(
-                        "flash",
-                        "Страница уже существует"
-                );
-
-                ctx.redirect("/urls/" + existing.getId());
-                return;
-            }
-
-            Url url = UrlRepository.save(new Url(normalized));
-
-            ctx.sessionAttribute(
-                    "flash",
-                    "Страница успешно добавлена"
-            );
-
-            ctx.redirect("/urls/" + url.getId());
-
+            uri = new URI(input);
         } catch (Exception e) {
-
-            ctx.status(422);
-
-            ctx.render(
-                    "index.jte",
-                    Map.of("flash", "Некорректный URL")
-            );
+            renderInvalidUrl(ctx);
+            return;
         }
+
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+
+        if (scheme == null
+                || host == null
+                || (!scheme.equals("http") && !scheme.equals("https"))) {
+
+            renderInvalidUrl(ctx);
+            return;
+        }
+
+        String normalized = scheme + "://" + host;
+
+        Optional<Url> existing =
+                UrlRepository.findByName(normalized);
+
+        if (existing.isPresent()) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.redirect("/urls/" + existing.get().getId());
+            return;
+        }
+
+        Url url = UrlRepository.save(
+                new Url(normalized)
+        );
+
+        ctx.sessionAttribute(
+                "flash",
+                "Страница успешно добавлена"
+        );
+
+        ctx.redirect("/urls/" + url.getId());
     }
 
     public static void index(Context ctx) throws Exception {
 
         var urls = UrlRepository.getEntities();
 
+        var latestChecks =
+                UrlCheckRepository.findLatestChecks();
+
         Map<Long, Integer> statuses = new HashMap<>();
 
         for (var url : urls) {
-            var check = UrlCheckRepository.getLastCheck(url.getId());
+
+            var check =
+                    latestChecks.get(url.getId());
+
             statuses.put(
                     url.getId(),
-                    check != null ? check.getStatusCode() : null
+                    check != null
+                            ? check.getStatusCode()
+                            : null
             );
         }
 
@@ -87,11 +87,6 @@ public class UrlController {
 
         page.put("urls", urls);
         page.put("statuses", statuses);
-
-        page.put(
-                "flash",
-                ctx.consumeSessionAttribute("flash")
-        );
 
         ctx.render("urls/index.jte", page);
     }
@@ -187,6 +182,13 @@ public class UrlController {
 
             ctx.render("urls/show.jte", page);
         }
+    }
+    private static void renderInvalidUrl(Context ctx) {
+        ctx.status(422);
+        ctx.render(
+                "index.jte",
+                Map.of("flash", "Некорректный URL")
+        );
     }
 }
 

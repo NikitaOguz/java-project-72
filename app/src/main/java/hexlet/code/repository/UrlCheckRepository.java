@@ -10,7 +10,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UrlCheckRepository extends BaseRepository {
 
@@ -99,24 +101,32 @@ public class UrlCheckRepository extends BaseRepository {
 
         return checks;
     }
-    public static UrlCheck getLastCheck(Long urlId) {
+    public static Map<Long, UrlCheck> findLatestChecks() throws Exception {
+
         String sql = """
-        SELECT *
-        FROM url_checks
-        WHERE url_id = ?
-        ORDER BY created_at DESC
-        LIMIT 1
+        SELECT uc.*
+        FROM url_checks uc
+        INNER JOIN (
+            SELECT url_id, MAX(id) AS max_id
+            FROM url_checks
+            GROUP BY url_id
+        ) latest
+        ON uc.id = latest.max_id
         """;
+
+        Map<Long, UrlCheck> result = new HashMap<>();
 
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
-            stmt.setLong(1, urlId);
+
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
+            while (rs.next()) {
+
                 UrlCheck check = new UrlCheck();
+
                 check.setId(rs.getLong("id"));
                 check.setUrlId(rs.getLong("url_id"));
                 check.setStatusCode(rs.getInt("status_code"));
@@ -124,17 +134,21 @@ public class UrlCheckRepository extends BaseRepository {
                 check.setTitle(rs.getString("title"));
                 check.setDescription(rs.getString("description"));
                 check.setCreatedAt(rs.getTimestamp("created_at"));
-                return check;
+
+                result.put(check.getUrlId(), check);
             }
-
-            return null;
-
-        } catch (Exception e) {
-            return null;
         }
+
+        return result;
     }
-    public static Integer getLastCheckStatusCode(Long urlId) {
-        UrlCheck check = getLastCheck(urlId);
-        return check != null ? check.getStatusCode() : null;
+    public static Integer getLastCheckStatusCode(Long urlId) throws Exception {
+
+        var latestChecks = findLatestChecks();
+
+        var check = latestChecks.get(urlId);
+
+        return check != null
+                ? check.getStatusCode()
+                : null;
     }
 }

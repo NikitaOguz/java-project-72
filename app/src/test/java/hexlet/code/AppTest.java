@@ -11,16 +11,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
+
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterEach;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppTest {
 
     private Javalin app;
+    private MockWebServer mockWebServer;
 
     @BeforeEach
     public void setUp() throws Exception {
 
         app = App.getApp();
+
+        mockWebServer = new MockWebServer();
+        mockWebServer.start();
 
         try (
                 var conn = BaseRepository.getDataSource().getConnection();
@@ -29,6 +37,10 @@ public class AppTest {
             stmt.execute("DELETE FROM url_checks");
             stmt.execute("DELETE FROM urls");
         }
+    }
+    @AfterEach
+    public void tearDown() throws Exception {
+        mockWebServer.shutdown();
     }
 
     @Test
@@ -144,7 +156,7 @@ public class AppTest {
         assertThat(check.getDescription()).isEqualTo("description");
     }
     @Test
-    public void testGetLastCheckMethods() throws Exception {
+    public void testFindLatestChecks() throws Exception {
 
         var url = UrlRepository.save(
                 new Url("https://example.com")
@@ -160,14 +172,17 @@ public class AppTest {
 
         UrlCheckRepository.save(check);
 
-        var lastCheck = UrlCheckRepository.getLastCheck(url.getId());
+        var latestChecks =
+                UrlCheckRepository.findLatestChecks();
 
-        assertThat(lastCheck).isNotNull();
+        assertThat(latestChecks)
+                .containsKey(url.getId());
 
-        var statusCode =
-                UrlCheckRepository.getLastCheckStatusCode(url.getId());
+        var lastCheck =
+                latestChecks.get(url.getId());
 
-        assertThat(statusCode).isEqualTo(200);
+        assertThat(lastCheck.getStatusCode())
+                .isEqualTo(200);
     }
     @Test
     public void testCheckPageError() throws Exception {
@@ -215,8 +230,27 @@ public class AppTest {
     @Test
     public void testCheckPageSuccess() throws Exception {
 
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(200)
+                        .setBody("""
+                        <html>
+                            <head>
+                                <title>Awesome page</title>
+                                <meta name="description"
+                                      content="Statements of great people">
+                            </head>
+                            <body>
+                                <h1>Do not expect a miracle, miracles yourself!</h1>
+                            </body>
+                        </html>
+                        """)
+        );
+
+        String testUrl = mockWebServer.url("/").toString();
+
         var url = UrlRepository.save(
-                new Url("https://example.com")
+                new Url(testUrl)
         );
 
         JavalinTest.test(app, (server, client) -> {
@@ -226,12 +260,40 @@ public class AppTest {
             var checks =
                     UrlCheckRepository.findByUrlId(url.getId());
 
-            assertThat(checks).isNotEmpty();
+            assertThat(checks).hasSize(1);
 
             var check = checks.get(0);
 
             assertThat(check.getStatusCode())
                     .isEqualTo(200);
+
+            assertThat(check.getTitle())
+                    .isEqualTo("Awesome page");
+
+            assertThat(check.getH1())
+                    .isEqualTo("Do not expect a miracle, miracles yourself!");
+
+            assertThat(check.getDescription())
+                    .isEqualTo("Statements of great people");
         });
+    }
+    @Test
+    public void testGetLastCheckStatusCode() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://example.com")
+        );
+
+        var check = new UrlCheck();
+        check.setUrlId(url.getId());
+        check.setStatusCode(200);
+
+        UrlCheckRepository.save(check);
+
+        Integer statusCode =
+                UrlCheckRepository.getLastCheckStatusCode(url.getId());
+
+        assertThat(statusCode)
+                .isEqualTo(200);
     }
 }

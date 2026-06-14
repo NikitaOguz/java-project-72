@@ -1,12 +1,12 @@
 package hexlet.code.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Url {
 
     private Long id;
     private String name;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     public Url() {
     }
@@ -23,7 +23,7 @@ public class Url {
         return name;
     }
 
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -35,7 +35,7 @@ public class Url {
         this.name = name;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

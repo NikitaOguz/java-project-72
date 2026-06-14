@@ -34,7 +34,7 @@
             </td>
 
             <td>
-               ${url.getCreatedAt().toLocalDateTime().toLocalDate().toString()}
+               ${url.getCreatedAt().toLocalDate().toString()}
             </td>
 
             <td>

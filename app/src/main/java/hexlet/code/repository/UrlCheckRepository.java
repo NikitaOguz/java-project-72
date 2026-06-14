@@ -124,17 +124,7 @@ public class UrlCheckRepository extends BaseRepository {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-
-                UrlCheck check = new UrlCheck();
-
-                check.setId(rs.getLong("id"));
-                check.setUrlId(rs.getLong("url_id"));
-                check.setStatusCode(rs.getInt("status_code"));
-                check.setH1(rs.getString("h1"));
-                check.setTitle(rs.getString("title"));
-                check.setDescription(rs.getString("description"));
-                check.setCreatedAt(rs.getTimestamp("created_at"));
-
+                UrlCheck check = buildUrlCheck(rs);
                 result.put(check.getUrlId(), check);
             }
         }
@@ -150,5 +140,19 @@ public class UrlCheckRepository extends BaseRepository {
         return check != null
                 ? check.getStatusCode()
                 : null;
+    }
+    private static UrlCheck buildUrlCheck(ResultSet rs) throws Exception {
+
+        UrlCheck check = new UrlCheck();
+
+        check.setId(rs.getLong("id"));
+        check.setUrlId(rs.getLong("url_id"));
+        check.setStatusCode(rs.getInt("status_code"));
+        check.setH1(rs.getString("h1"));
+        check.setTitle(rs.getString("title"));
+        check.setDescription(rs.getString("description"));
+        check.setCreatedAt(rs.getTimestamp("created_at"));
+
+        return check;
     }
 }

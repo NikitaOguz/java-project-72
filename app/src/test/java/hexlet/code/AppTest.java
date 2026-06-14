@@ -296,4 +296,16 @@ public class AppTest {
         assertThat(statusCode)
                 .isEqualTo(200);
     }
+    @Test
+    public void testGetLastCheckStatusCodeWithoutChecks() throws Exception {
+
+        var url = UrlRepository.save(
+                new Url("https://example.com")
+        );
+
+        Integer statusCode =
+                UrlCheckRepository.getLastCheckStatusCode(url.getId());
+
+        assertThat(statusCode).isNull();
+    }
 }

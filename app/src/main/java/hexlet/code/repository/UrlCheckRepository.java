@@ -9,10 +9,7 @@ import java.sql.Statement;
 
 import java.sql.Timestamp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UrlCheckRepository extends BaseRepository {
 
@@ -23,7 +20,6 @@ public class UrlCheckRepository extends BaseRepository {
                 (url_id, status_code, h1, title, description, created_at)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
-
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(
@@ -31,7 +27,6 @@ public class UrlCheckRepository extends BaseRepository {
                         Statement.RETURN_GENERATED_KEYS
                 )
         ) {
-
             stmt.setLong(1, check.getUrlId());
             stmt.setInt(2, check.getStatusCode());
 
@@ -39,11 +34,7 @@ public class UrlCheckRepository extends BaseRepository {
             stmt.setString(4, check.getTitle());
             stmt.setString(5, check.getDescription());
 
-            stmt.setTimestamp(
-                    6,
-                    new Timestamp(System.currentTimeMillis())
-            );
-
+            stmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
             stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();
@@ -51,7 +42,6 @@ public class UrlCheckRepository extends BaseRepository {
             if (keys.next()) {
                 check.setId(keys.getLong(1));
             }
-
             return check;
         }
     }
@@ -59,7 +49,6 @@ public class UrlCheckRepository extends BaseRepository {
     public static List<UrlCheck> findByUrlId(Long urlId) throws Exception {
 
         List<UrlCheck> checks = new ArrayList<>();
-
         String sql = """
                 SELECT *
                 FROM url_checks
@@ -82,23 +71,16 @@ public class UrlCheckRepository extends BaseRepository {
 
                 check.setId(rs.getLong("id"));
                 check.setUrlId(rs.getLong("url_id"));
-
-                check.setStatusCode(
-                        rs.getInt("status_code")
-                );
+                check.setStatusCode(rs.getInt("status_code"));
 
                 check.setH1(rs.getString("h1"));
                 check.setTitle(rs.getString("title"));
                 check.setDescription(rs.getString("description"));
-
-                check.setCreatedAt(
-                        rs.getTimestamp("created_at")
-                );
+                check.setCreatedAt(rs.getTimestamp("created_at").toInstant());
 
                 checks.add(check);
             }
         }
-
         return checks;
     }
     public static Map<Long, UrlCheck> findLatestChecks() throws Exception {
@@ -137,9 +119,7 @@ public class UrlCheckRepository extends BaseRepository {
 
         var check = latestChecks.get(urlId);
 
-        return check != null
-                ? check.getStatusCode()
-                : null;
+        return check != null ? check.getStatusCode() : null;
     }
     private static UrlCheck buildUrlCheck(ResultSet rs) throws Exception {
 
@@ -151,7 +131,7 @@ public class UrlCheckRepository extends BaseRepository {
         check.setH1(rs.getString("h1"));
         check.setTitle(rs.getString("title"));
         check.setDescription(rs.getString("description"));
-        check.setCreatedAt(rs.getTimestamp("created_at"));
+        check.setCreatedAt(rs.getTimestamp("created_at").toInstant());
 
         return check;
     }

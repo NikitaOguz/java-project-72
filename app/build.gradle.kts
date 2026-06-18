@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id("java")
     id("org.sonarqube") version "7.3.0.8198"
     jacoco
     application
@@ -39,6 +38,11 @@ dependencies {
     implementation("com.konghq:unirest-java:3.14.5")
 
     implementation("org.jsoup:jsoup:1.18.1")
+    compileOnly ("org.projectlombok:lombok:1.18.38")
+    annotationProcessor ("org.projectlombok:lombok:1.18.38")
+
+    testCompileOnly ("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor ("org.projectlombok:lombok:1.18.38")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")

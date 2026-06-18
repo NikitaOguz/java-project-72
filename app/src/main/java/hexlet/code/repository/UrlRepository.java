@@ -35,7 +35,8 @@ public class UrlRepository extends BaseRepository {
             return url;
         }
     }
-    public static Url find(Long id) throws Exception {
+
+    public static Optional<Url> find(Long id) throws Exception {
 
         String sql = "SELECT * FROM urls WHERE id = ?";
 
@@ -56,10 +57,10 @@ public class UrlRepository extends BaseRepository {
                 url.setName(rs.getString("name"));
                 url.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
-                return url;
+                return Optional.of(url);
             }
 
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -82,10 +83,7 @@ public class UrlRepository extends BaseRepository {
 
                 url.setId(rs.getLong("id"));
                 url.setName(rs.getString("name"));
-                url.setCreatedAt(
-                        rs.getTimestamp("created_at")
-                                .toLocalDateTime()
-                );
+                url.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
                 return Optional.of(url);
             }
@@ -97,7 +95,6 @@ public class UrlRepository extends BaseRepository {
     public static List<Url> getEntities() throws Exception {
 
         List<Url> urls = new ArrayList<>();
-
         String sql = "SELECT * FROM urls ORDER BY created_at DESC";
 
         try (

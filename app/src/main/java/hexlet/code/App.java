@@ -47,15 +47,9 @@ public class App {
 
         app.get("/", ctx -> {
             var page = new HashMap<String, Object>();
-
-            page.put(
-                    "flash",
-                    ctx.consumeSessionAttribute("flash")
-            );
-
+            page.put("flash", ctx.consumeSessionAttribute("flash"));
             ctx.render("index.jte", page);
         });
-
         app.post("/urls", UrlController::create);
         app.get("/urls", UrlController::index);
         app.get("/urls/{id}", UrlController::show);

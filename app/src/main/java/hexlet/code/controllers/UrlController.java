@@ -5,7 +5,9 @@ import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import org.jsoup.Jsoup;
 
 import java.net.URI;
@@ -81,15 +83,15 @@ public class UrlController {
                 .orElseThrow(() -> new Exception("URL not found"));
 
         try {
-
             var response = Unirest.get(url.getName()).asString();
 
-            if (response.getStatus() >= 400) {
-                throw new Exception();
+            if (response.getStatus() >= HttpStatus.BAD_REQUEST.getCode()) {
+                throw new Exception("Произошла ошибка при проверке");
             }
-            var document = Jsoup.parse(response.getBody());
-            var check = new UrlCheck();
 
+            var document = Jsoup.parse(response.getBody());
+
+            var check = new UrlCheck();
             check.setUrlId(id);
             check.setStatusCode(response.getStatus());
             check.setTitle(document.title());
@@ -97,28 +99,30 @@ public class UrlController {
             var h1Element = document.selectFirst("h1");
             check.setH1(h1Element != null ? h1Element.text() : "");
 
-            var descriptionElement = document.selectFirst("meta[name=description]");
-            check.setDescription(descriptionElement != null ? descriptionElement.attr("content") : "");
+            var descriptionElement =
+                    document.selectFirst("meta[name=description]");
+
+            check.setDescription(
+                    descriptionElement != null
+                            ? descriptionElement.attr("content")
+                            : ""
+            );
 
             UrlCheckRepository.save(check);
+
             ctx.sessionAttribute("flash", "Страница успешно проверена");
 
-            ctx.redirect("/urls/" + id);
+        } catch (UnirestException e) {
+            ctx.sessionAttribute("flash", "Некорректный адрес");
 
         } catch (Exception e) {
-
-            var checks = UrlCheckRepository.findByUrlId(id);
-            var page = new HashMap<String, Object>();
-
-            page.put("url", url);
-            page.put("checks", checks);
-            page.put("flash", "Произошла ошибка при проверке");
-
-            ctx.render("urls/show.jte", page);
+            ctx.sessionAttribute("flash", e.getMessage());
         }
+
+        ctx.redirect("/urls/" + id);
     }
     private static void renderInvalidUrl(Context ctx) {
-        ctx.status(422);
+        ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
         ctx.render("index.jte", Map.of("flash", "Некорректный URL"));
     }
 }

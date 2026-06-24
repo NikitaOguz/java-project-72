@@ -2,8 +2,8 @@ FROM gradle:8.12.1-jdk21
 
 WORKDIR /app
 
-COPY ./app .
+COPY . .
 
-RUN gradle installDist
+RUN gradle installDist --no-daemon
 
-CMD ./build/install/app/bin/app
+CMD ["./build/install/app/bin/app"]

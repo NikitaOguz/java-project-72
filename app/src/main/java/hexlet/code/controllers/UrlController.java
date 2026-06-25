@@ -59,7 +59,7 @@ public class UrlController {
 
         var page = new HashMap<String, Object>();
         page.put("urls", urls);
-        page.put("statuses", statuses);
+        page.put("latestChecks", latestChecks);
 
         ctx.render("urls/index.jte", page);
     }

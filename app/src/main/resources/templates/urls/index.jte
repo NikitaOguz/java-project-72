@@ -1,5 +1,5 @@
 @param java.util.List<hexlet.code.model.Url> urls
-@param java.util.Map<Long, Integer> statuses
+@param java.util.Map<Long, hexlet.code.model.UrlCheck> latestChecks
 @param String flash
 
 @template.layout(content = @`
@@ -15,7 +15,7 @@
     <tr>
         <th>ID</th>
         <th>Имя</th>
-        <th>Дата создания</th>
+        <th>Последняя проверка</th>
         <th>Код ответа</th>
     </tr>
     </thead>
@@ -23,6 +23,8 @@
     <tbody>
 
     @for(var url : urls)
+
+        var check = latestChecks.get(url.getId());
 
         <tr>
             <td>${url.getId()}</td>
@@ -34,12 +36,16 @@
             </td>
 
             <td>
-               ${url.getCreatedAt().toLocalDate().toString()}
+                @if(check != null)
+                    ${check.getCreatedAt()
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDate()}
+                @endif
             </td>
 
             <td>
-                @if(statuses.get(url.getId()) != null)
-                    ${statuses.get(url.getId())}
+                @if(check != null)
+                    ${check.getStatusCode()}
                 @endif
             </td>
         </tr>

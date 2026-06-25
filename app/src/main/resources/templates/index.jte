@@ -22,20 +22,23 @@
             <form action="/urls" method="post" class="row">
 
                 <div class="col-8">
-                    <label>
-                        <input
-                                type="text"
-                                name="url"
-                                class="form-control form-control-lg"
-                                placeholder="https://example.com"
-                        >
+                    <label for="url-name" class="visually-hidden">
+                        Url для проверки
                     </label>
+
+                    <input
+                            id="url-name"
+                            type="text"
+                            name="url"
+                            class="form-control form-control-lg"
+                            placeholder="https://www.example.com"
+                    >
                 </div>
 
                 <div class="col-2">
                     <input
                             type="submit"
-                            class="btn btn-primary btn-lg"
+                            class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3"
                             value="Проверить"
                     >
                 </div>

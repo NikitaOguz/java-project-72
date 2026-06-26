@@ -9,6 +9,13 @@
         ${flash}
     </div>
 @endif
+    @if(urls.isEmpty())
+
+        <p class="text-muted">
+            Проверка еще не проводилась
+        </p>
+
+    @else
 <table class="table" data-test="urls">
 
     <thead>
@@ -16,6 +23,7 @@
         <th>ID</th>
         <th>Имя</th>
         <th>Дата создания</th>
+        <th>Последняя проверка</th>
         <th>Код ответа</th>
     </tr>
     </thead>
@@ -59,4 +67,5 @@
 
     </tbody>
 </table>
+    @endif
 `)

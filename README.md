@@ -1,40 +1,96 @@
-### Hexlet tests and linter status:
+# Page Analyzer (Java)
+
+### Hexlet tests and linter status
+
 [![Actions Status](https://github.com/NikitaOguz/java-project-72/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/NikitaOguz/java-project-72/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72&metric=bugs)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72&metric=coverage)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
 
-Проект: Анализатор страниц (Java)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72\&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
 
-Приложение принимает URL сайта, выполняет анализ страницы и извлекает основные SEO-метаданные: title, h1 и description, после чего сохраняет результаты в базу данных. 
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72\&metric=bugs)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
 
-Проект демонстрирует навыки разработки веб-приложений на Javalin, работы с SQL-запросами и базами данных, создания HTML-шаблонов с использованием Bootstrap, а также написания тестов, включая unit- и integration-тестирование с применением Mockito.
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NikitaOguz_java-project-72\&metric=coverage)](https://sonarcloud.io/summary/new_code?id=NikitaOguz_java-project-72)
 
-Используемые технологии
-Java 21
-Javalin
-Mockito
-Gradle
-JUnit 5
+---
 
-Запуск проекта
-Клонирование репозитория
+## 📖 О проекте
+
+**Page Analyzer** — веб-приложение для анализа веб-страниц.
+
+Приложение принимает URL сайта, выполняет анализ страницы и извлекает основные SEO-метаданные:
+
+* `title`
+* `h1`
+* `description`
+
+Результаты проверки сохраняются в базе данных и отображаются в удобном интерфейсе.
+
+Проект демонстрирует навыки разработки веб-приложений на **Javalin**, работы с SQL-базами данных, создания HTML-шаблонов с использованием **JTE** и **Bootstrap**, а также написания **unit** тестов с использованием **JUnit 5** и **Mockito**.
+
+---
+
+## 🛠 Используемые технологии
+
+* Java 21
+* Javalin
+* Gradle
+* JTE Templates
+* Bootstrap 5
+* JDBC
+* H2 Database
+* Jsoup
+* JUnit 5
+* Mockito
+
+---
+
+## 🚀 Запуск проекта
+
+### Клонирование репозитория
+
+```bash
 git clone https://github.com/NikitaOguz/java-project-72.git
 cd java-project-72
+```
 
-Команды для запуска:
+### Сборка проекта
+
+```bash
 make build
+```
+
+### Запуск приложения
+
+```bash
 make run
+```
 
 После запуска приложение будет доступно по адресу:
 
+```text
 http://localhost:7070
+```
 
-На главной странице введите адрес проверяемого сайта и нажмите на кнопку "Проверить".
+---
 
-После добавления сайта у вас открывается страница всех добавленных вами сайтов.
+## 💻 Как пользоваться
 
-На данной странице вы можете нажать на кнопку "Запустить проверку" и снизу просмотреть полученные вами данные проверки
+1. Откройте главную страницу приложения.
+2. Введите URL сайта и нажмите **«Проверить»**.
+3. После добавления сайт появится в общем списке.
+4. Перейдите на страницу нужного сайта.
+5. Нажмите **«Запустить проверку»**.
+6. После выполнения проверки будут отображены:
 
-Ссылка на рабочий проект из Render:
-https://java-project-72-lror.onrender.com/
+   * HTTP-код ответа;
+   * заголовок страницы (`title`);
+   * основной заголовок (`h1`);
+   * описание (`description`);
+   * дата выполнения проверки.
+
+---
+
+## 🌐 Демо
+
+Рабочая версия приложения доступна по ссылке:
+
+**https://java-project-72-lror.onrender.com/**

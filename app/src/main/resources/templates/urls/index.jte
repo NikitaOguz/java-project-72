@@ -22,7 +22,6 @@
     <tr>
         <th>ID</th>
         <th>Имя</th>
-        <th>Дата создания</th>
         <th>Последняя проверка</th>
         <th>Код ответа</th>
     </tr>
@@ -49,18 +48,10 @@
 
             <td>
                 @if(check != null)
-                    ${check.getCreatedAt()
-    .atZone(java.time.ZoneId.systemDefault())
-    .toLocalDate()
-    .toString()}
-                @endif
-            </td>
-
-            <td>
-                @if(check != null)
                     ${check.getStatusCode()}
                 @endif
             </td>
+
         </tr>
 
     @endfor

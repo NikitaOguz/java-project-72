@@ -30,7 +30,7 @@
         <td>Дата создания</td>
 
         <td>
-            ${url.getCreatedAt().toLocalDate()}
+            ${url.getCreatedAt().toLocalDate().toString()}
         </td>
     </tr>
 
@@ -105,7 +105,8 @@
             <td>
                 ${check.getCreatedAt()
         .atZone(java.time.ZoneId.systemDefault())
-        .toLocalDate()}
+        .toLocalDate()
+        .toString()}
             </td>
 
         </tr>

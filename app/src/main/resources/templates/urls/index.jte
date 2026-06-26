@@ -15,7 +15,7 @@
     <tr>
         <th>ID</th>
         <th>Имя</th>
-        <th>Последняя проверка</th>
+        <th>Дата создания</th>
         <th>Код ответа</th>
     </tr>
     </thead>
@@ -24,7 +24,7 @@
 
     @for(var url : urls)
 
-        var check = latestChecks.get(url.getId());
+        !{var check = latestChecks.get(url.getId());}
 
         <tr>
             <td>${url.getId()}</td>
@@ -36,10 +36,15 @@
             </td>
 
             <td>
+                ${url.getCreatedAt().toLocalDate().toString()}
+            </td>
+
+            <td>
                 @if(check != null)
                     ${check.getCreatedAt()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDate()}
+    .atZone(java.time.ZoneId.systemDefault())
+    .toLocalDate()
+    .toString()}
                 @endif
             </td>
 

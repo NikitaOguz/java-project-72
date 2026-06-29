@@ -103,10 +103,9 @@
             </td>
 
             <td>
-                ${check.getCreatedAt()
-        .atZone(java.time.ZoneId.systemDefault())
-        .toLocalDate()
-        .toString()}
+                ${check.getCreatedAt().format(
+    java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+)}
             </td>
 
         </tr>

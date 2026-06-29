@@ -43,7 +43,11 @@
             </td>
 
             <td>
-                ${url.getCreatedAt().toLocalDate().toString()}
+                @if(check != null)
+                    ${check.getCreatedAt().format(
+            java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        )}
+                @endif
             </td>
 
             <td>

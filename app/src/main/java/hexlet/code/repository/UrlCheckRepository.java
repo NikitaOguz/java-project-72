@@ -76,7 +76,7 @@ public class UrlCheckRepository extends BaseRepository {
                 check.setH1(rs.getString("h1"));
                 check.setTitle(rs.getString("title"));
                 check.setDescription(rs.getString("description"));
-                check.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                check.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
                 checks.add(check);
             }
@@ -131,7 +131,7 @@ public class UrlCheckRepository extends BaseRepository {
         check.setH1(rs.getString("h1"));
         check.setTitle(rs.getString("title"));
         check.setDescription(rs.getString("description"));
-        check.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+        check.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
         return check;
     }

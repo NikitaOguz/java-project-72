@@ -3,7 +3,7 @@ package hexlet.code.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,5 +15,5 @@ public class UrlCheck {
     private String h1;
     private String title;
     private String description;
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 }

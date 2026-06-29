@@ -103,9 +103,10 @@
             </td>
 
             <td>
-                ${check.getCreatedAt().format(
-    java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-)}
+                ${check.getCreatedAt()
+     .atZone(java.time.ZoneId.of("UTC"))
+     .withZoneSameInstant(java.time.ZoneId.of("Europe/Moscow"))
+     .format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}
             </td>
 
         </tr>

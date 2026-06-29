@@ -9,6 +9,7 @@ import java.sql.Statement;
 
 import java.sql.Timestamp;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class UrlCheckRepository extends BaseRepository {
@@ -34,7 +35,7 @@ public class UrlCheckRepository extends BaseRepository {
             stmt.setString(4, check.getTitle());
             stmt.setString(5, check.getDescription());
 
-            stmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+            stmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();

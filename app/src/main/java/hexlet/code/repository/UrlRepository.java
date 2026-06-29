@@ -9,6 +9,7 @@ import java.sql.Statement;
 
 import java.sql.Timestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class UrlRepository extends BaseRepository {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, url.getName());
-            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
 
             stmt.executeUpdate();
 
